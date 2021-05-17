@@ -7,15 +7,15 @@ import * as Basic from '@hapi/basic';
 import * as HapiCors from 'hapi-cors';
 import * as HapiBearer from 'hapi-auth-bearer-token';
 import * as HapiPulse from 'hapi-pulse';
+import * as Qs from 'qs';
 import routes from './routes';
 import config from './config/config';
-import * as Qs from 'qs';
-import { handleValidationError, responseHandler } from './utils';
-import { tokenValidate } from './utils/auth';
+import { handleValidationError, responseHandler, } from './utils';
+import { tokenValidate, } from './utils/auth';
+import SwaggerOptions from './config/swagger';
+import { pinoConfig, } from './config/pino';
 
 const HapiSwagger = require('hapi-swagger');
-import SwaggerOptions from './config/swagger';
-import { pinoConfig } from './config/pino';
 const Package = require('../../package.json');
 
 SwaggerOptions.info.version = Package.version;
@@ -48,8 +48,8 @@ const init = async () => {
     Inert,
     Vision,
     HapiBearer,
-    { plugin: Pino, options: pinoConfig(false) },
-    { plugin: HapiSwagger, options: SwaggerOptions },
+    { plugin: Pino, options: pinoConfig(false), },
+    { plugin: HapiSwagger, options: SwaggerOptions, }
   ]);
 
   // Авторизация через соцсети
@@ -107,11 +107,12 @@ const init = async () => {
   try {
     await server.start();
     server.log('info', `Server running at: ${server.info.uri}`);
-  } catch (err) {
+  }
+  catch (err) {
     server.log('error', JSON.stringify(err));
   }
 
   return server;
 };
 
-export { init };
+export { init, };

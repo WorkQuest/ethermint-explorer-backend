@@ -1,35 +1,43 @@
-import { Column, DataType, Model, Scopes, Table } from 'sequelize-typescript';
-import { getUUID } from '../utils';
-import * as bcrypt from "bcrypt";
+import {
+  Column, DataType, Model, Scopes, Table, HasOne,
+} from 'sequelize-typescript';
+import * as bcrypt from 'bcrypt';
+import { getUUID, } from '../utils';
+import { UserAvatar, } from './UserAvatar';
 
 @Scopes(() => ({
   defaultScope: {
     attributes: {
-      exclude: ['password']
-    }
+      exclude: ['password'],
+    },
   },
   withPassword: {
     attributes: {
-      include: ['password']
-    }
-  }
+      include: ['password'],
+    },
+  },
 }))
 @Table
 export class User extends Model {
-  @Column({ primaryKey: true, type: DataType.STRING, defaultValue: () => getUUID() }) id: string;
+  @Column({ primaryKey: true, type: DataType.STRING, defaultValue: () => getUUID(), }) id: string;
+
+  @HasOne(() => UserAvatar)
+  avatar: UserAvatar;
+
   @Column({
     type: DataType.STRING,
     set(value: string) {
-      let salt = bcrypt.genSaltSync(10);
-      let hash = bcrypt.hashSync(value, salt);
+      const salt = bcrypt.genSaltSync(10);
+      const hash = bcrypt.hashSync(value, salt);
       // @ts-ignore
-      this.setDataValue("password", hash);
+      this.setDataValue('password', hash);
     },
     get() {
       // @ts-ignore
-      return this.getDataValue("password");
-    }
-  }) password: string;
+      return this.getDataValue('password');
+    },
+  })
+  password: string;
 
   async passwordCompare(pwd: string) {
     return bcrypt.compareSync(pwd, this.password);
