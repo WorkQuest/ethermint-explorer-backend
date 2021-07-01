@@ -11,9 +11,10 @@ import * as Qs from 'qs';
 import routes from './routes';
 import config from './config/config';
 import { handleValidationError, responseHandler, } from './utils';
-import { tokenValidate, } from './utils/auth';
 import SwaggerOptions from './config/swagger';
 import { pinoConfig, } from './config/pino';
+import { run } from 'graphile-worker';
+import { initDatabase } from './models';
 
 const HapiSwagger = require('hapi-swagger');
 const Package = require('../../package.json');
@@ -43,49 +44,19 @@ const init = async () => {
   server.realm.modifiers.route.prefix = '/api';
   // Регистрируем расширения
   await server.register([
-    Basic,
     Nes,
     Inert,
     Vision,
-    HapiBearer,
     { plugin: Pino, options: pinoConfig(false), },
     { plugin: HapiSwagger, options: SwaggerOptions, }
   ]);
-
-  // Авторизация через соцсети
-  // server.auth.strategy('google', 'bell', {
-  //   provider: 'Google',
-  //   clientId: process.env.auth_google_id,
-  //   clientSecret: process.env.auth_google_secret,
-  //   password: process.env.auth_google_secret,
-  //   isSecure: false
-  // });
-  // server.auth.strategy('fb', 'bell', {
-  //   provider: 'Facebook',
-  //   clientId: Number(process.env.auth_fb_id),
-  //   clientSecret: process.env.auth_fb_secret,
-  //   password: process.env.auth_fb_cookie_password,
-  //   isSecure: false
-  // });
-  // server.auth.strategy('vk', 'bell', {
-  //   provider: 'VK',
-  //   clientId: Number(process.env.auth_vk_id),
-  //   clientSecret: process.env.auth_vk_secret,
-  //   password: process.env.auth_vk_cookie_password,
-  //   isSecure: false
-  // });
-
-  // Авторизация стандартная (логин+пароль)
-  // server.auth.strategy('simple', 'basic', { validate: basicAuthHandler });
-
-  // JWT Auth
-  server.auth.strategy('jwt-access', 'bearer-access-token', {
-    validate: tokenValidate('access'),
+  server.app.db = await initDatabase();
+  server.app.runner = await run({
+    connectionString: config.dbLink,
+    concurrency: 5,
+    pollInterval: 1000,
+    taskDirectory: `${__dirname}/jobs`
   });
-  server.auth.strategy('jwt-refresh', 'bearer-access-token', {
-    validate: tokenValidate('refresh'),
-  });
-  server.auth.default('jwt-access');
 
   // Загружаем маршруты
   server.route(routes);

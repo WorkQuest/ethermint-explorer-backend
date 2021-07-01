@@ -17,7 +17,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
+          node-version: '14.x'
 
       - name: Install npm dependencies
         run: npm install
@@ -26,7 +26,7 @@ jobs:
         run: npm run build
 
   deploy:
-
+    environment: develop
     runs-on: ubuntu-18.04
     needs: [build]
 
@@ -51,8 +51,11 @@ jobs:
           cd ci-scripts
           ansible-playbook -i "${{ secrets.REMOTE_HOST }}" -e "ansible_user=${{ secrets.REMOTE_USER }} \
             DB_LINK=${{ secrets.DB_LINK }} \
-            JWT_ACCESS_SECRET=${{ secrets.JWT_ACCESS_SECRET }} \
-            JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }} \
             SERVER_HOST=${{ secrets.SERVER_HOST }} \
             SERVER_PORT=${{ secrets.SERVER_PORT }} \
+
+            RPC_URL=${{ secrets.RPC_URL }} \
+            WS_URL=${{ secrets.WS_URL }} \
+            DEFAULT_COIN=${{ secrets.DEFAULT_COIN }} \
+
             SRC_DIR=${{ github.workspace }}/" backend-update.yml;

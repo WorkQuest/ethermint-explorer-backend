@@ -1,4 +1,9 @@
-import v1 from './v1';
-import v2 from './v2';
+import block from './v1/block';
+import account from './v1/account';
+import tx from './v1/tx';
 
-export default [...v1, ...v2];
+export default [
+  ...block,
+  ...account,
+  ...tx
+];

@@ -4,30 +4,12 @@ config();
 
 export default {
   dbLink: process.env.DB_LINK,
-  auth: {
-    jwt: {
-      access: {
-        secret: process.env.JWT_ACCESS_SECRET,
-        lifetime: Number(process.env.JWT_ACCESS_LIFETIME),
-      },
-      refresh: {
-        secret: process.env.JWT_REFRESH_SECRET,
-        lifetime: Number(process.env.JWT_REFRESH_LIFETIME),
-      },
-    },
-  },
   server: {
     port: process.env.SERVER_PORT ? Number(process.env.SERVER_PORT) : 3000,
     host: process.env.SERVER_HOST ? process.env.SERVER_HOST : 'localhost',
     shutdownTimeout: process.env.SERVER_SHUTDOWN_TIMEOUT
       ? Number(process.env.SERVER_SHUTDOWN_TIMEOUT)
       : 15000,
-  },
-  files: {
-    allowedExtensions: /(jpg|png|jpeg)$/,
-    maxFilesSize: 1024 * 1024 * 15, // in bytes
-    maxFilesCount: 2,
-    maxFileNameLength: 50,
   },
   cors: {
     origins: process.env.CORS_ORIGINS ? JSON.parse(process.env.CORS_ORIGINS) : ['*'],
@@ -45,4 +27,11 @@ export default {
       ? JSON.parse(process.env.CORS_EXPOSE_HEADERS)
       : ['content-type', 'content-length'],
   },
+  rpc: {
+    url: process.env.RPC_URL,
+    ws: process.env.WS_URL
+  },
+  blockchain: {
+    coin: process.env.DEFAULT_COIN
+  }
 };
