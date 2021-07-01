@@ -7,7 +7,7 @@
 - name: Delete backend dir
   file:
     path: '{{ backend_bin }}'
-    state: absent    
+    state: absent
 
 - name: Create backend dir
   file:
@@ -20,14 +20,13 @@
 - name: Upload backend files
   synchronize:
     src: '{{ SRC_DIR }}'
-    dest: '{{ backend_bin }}'    
+    dest: '{{ backend_bin }}'
   register: copyfiles
 
 - name: Install "typescript" node.js package globally.
   npm:
     name: typescript
     global: yes
-  become: yes
 
 - name: Install packages based on package.json
   npm:
@@ -42,8 +41,8 @@
 - name: Copy or generate env file
   template:
     src: ./{{ backend_env }}.j2
-    dest: '{{ backend_bin }}/{{ backend_env }}'    
- 
+    dest: '{{ backend_bin }}/{{ backend_env }}'
+
 - name: Start backend process
   shell: pm2 start app.json
   args:
@@ -53,4 +52,3 @@
   shell: pm2 save
   args:
     chdir: '{{ backend_bin }}'
-  
