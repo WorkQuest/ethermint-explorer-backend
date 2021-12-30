@@ -124,11 +124,9 @@ export async function workerAsyncFunction() {
       await parseBlock(cli, sequelize, latestParsedBlock + 1);
       latestParsedBlock++;
     } catch (e) {
-      console.log(e)
-      console.log('Cannot parse block at height: ', latestParsedBlock+1);
+      console.log('Cannot parse block at height: ', latestParsedBlock + 1);
       await sleep(2000);
     }
-
   }
 
 }
