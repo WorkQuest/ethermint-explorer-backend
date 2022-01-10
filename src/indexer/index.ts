@@ -15,7 +15,7 @@ import { addParseERC20EventJob } from '../server/jobs/parseERC20Event';
 const nullAddress = '0x0000000000000000000000000000000000000000';
 
 
-export async function parseTx(cli, block, hash, timestamp, transaction){
+export async function parseTx(cli, block, hash, timestamp) {
   let receipt = await cli.eth_getTransactionReceipt(hash);
   let txInfo = await getTXByHash(hash);
   await Account.createIfNotExist(txInfo.from);
@@ -26,7 +26,6 @@ export async function parseTx(cli, block, hash, timestamp, transaction){
       where: {
         id: { [Op.in]: [txInfo.to] }
       },
-      transaction
     });
   }
 
@@ -45,18 +44,17 @@ export async function parseTx(cli, block, hash, timestamp, transaction){
     tokenId: null,
     status: hex2dec(receipt.status),
     input: txInfo.input
-  }, { transaction });
+  });
   // TODO: change balances
   await Account.increment('txsCount', {
     where: {
       id: { [Op.in]: [txInfo.from] }
     },
-    transaction
   });
   let eventIds: string[] = []
   if (receipt.logs.length !== 0){
     let contract : Account;
-    if (txInfo.to === null){ // Should create contract account
+    if (txInfo.to === null) { // Should create contract account
       let [contractInst, isNew] = await Account.createContractAccount(receipt.contractAddress, txInfo.from, receipt.transactionHash)
       if (isNew)
         await addCheckERC20ContractJob({contract: receipt.contractAddress});
@@ -64,8 +62,8 @@ export async function parseTx(cli, block, hash, timestamp, transaction){
     } else {
       contract = await Account.findByPk(txInfo.to);
     }
-    await tx.update({contractAddress: contract.id}, {transaction});
-    await contract.increment('txsCount', {where: {id: contract.id}, transaction});
+    await tx.update({ contractAddress: contract.id });
+    await contract.increment('txsCount', { where: { id: contract.id } });
 
     for (const log of receipt.logs){
       let event = await Event.create({
@@ -73,25 +71,24 @@ export async function parseTx(cli, block, hash, timestamp, transaction){
         blockNumber: block,
         txHash: receipt.transactionHash,
         data: log,
-      }, {transaction})
+      })
       if (contract.isERC20)
         eventIds.push(event.id)
     }
   }
 
-  await Balance.decrementBalance(getTxFee(txInfo.gas, txInfo.gasPrice), txInfo.from, config.blockchain.coin, transaction);
+  await Balance.decrementBalance(getTxFee(txInfo.gas, txInfo.gasPrice), txInfo.from, config.blockchain.coin);
 
   if (txInfo.value !== '0x0'){
-    await Balance.decrementBalance(new BigNumber(txInfo.value).toString(), txInfo.from, config.blockchain.coin, transaction);
-    await Balance.incrementBalance(new BigNumber(txInfo.value).toString(), txInfo.to, config.blockchain.coin, transaction);
+    await Balance.decrementBalance(new BigNumber(txInfo.value).toString(), txInfo.from, config.blockchain.coin);
+    await Balance.incrementBalance(new BigNumber(txInfo.value).toString(), txInfo.to, config.blockchain.coin);
   }
   return eventIds
 }
 
-export async function parseBlock(cli, sequelize, blockNumber: number){
+export async function parseBlock(cli, sequelize, blockNumber: number) {
   let blockInfo = await cli.eth_getBlockByNumber(blockNumber, false);
-  console.log('Try parsing block ',blockNumber);
-  let transaction = await sequelize.transaction();
+  console.log('Try parsing block ', blockNumber);
   let block = await Block.create({
     id: hex2dec(blockInfo.number),
     timestamp: new Date(hex2dec(blockInfo.timestamp) * 1000),
@@ -100,15 +97,14 @@ export async function parseBlock(cli, sequelize, blockNumber: number){
     gasLimit: hex2dec(blockInfo.gasLimit),
     gasUsed: hex2dec(blockInfo.gasUsed),
     hash: blockInfo.hash
-  }, { transaction });
+  });
 
   let eventIds: string[] = []
-  for (const hash of blockInfo.transactions){
-    let txEvents = await parseTx(cli, block.id, hash, block.timestamp, transaction);
+  for (const hash of blockInfo.transactions) {
+    let txEvents = await parseTx(cli, block.id, hash, block.timestamp);
     eventIds = [...eventIds, ...txEvents]
   }
 
-  await transaction.commit();
   for (const eventId of eventIds){
     await addParseERC20EventJob({eventId})
   }
