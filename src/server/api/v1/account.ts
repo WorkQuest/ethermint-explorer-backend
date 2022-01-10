@@ -51,6 +51,7 @@ export async function getAccountTxs(r) {
         toAddress: r.params.address
       }
     },
+    order: [['timestamp', 'DESC']],
     limit: r.query.limit,
     offset: r.query.offset
   });
