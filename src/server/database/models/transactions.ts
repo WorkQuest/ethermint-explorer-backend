@@ -1,7 +1,6 @@
 import { BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table } from 'sequelize-typescript';
 import { blocks } from './blocks';
 import { addresses } from './addresses';
-import { smart_contracts } from './smart_contracts';
 import { parseBufferedAddress } from '../../utils/address';
 import { token_transfers } from './token_transfers';
 

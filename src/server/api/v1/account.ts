@@ -1,13 +1,11 @@
 import { error, output } from '../../utils';
 import { addresses } from '../../database/models/addresses';
-import { Errors } from '../../utils/errors';
 import { transactions } from '../../database/models/transactions';
 import { Op } from 'sequelize';
-import { Buffer } from 'buffer';
 import { convertHashToBuffer } from '../../utils/address';
 
 export async function getAccountByAddress(r) {
-  const address = new Buffer(r.params.address.slice(2).toUpperCase(), "hex")
+  const address = convertHashToBuffer(r.params.address);
   const account = await addresses.findByPk(address);
 
   return output(account);

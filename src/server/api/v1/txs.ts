@@ -3,7 +3,6 @@ import { Errors } from '../../utils/errors';
 import { transactions } from '../../database/models/transactions';
 import { addresses } from '../../database/models/addresses';
 import { blocks } from '../../database/models/blocks';
-import { tokens } from '../../database/models/tokens';
 import { token_transfers } from '../../database/models/token_transfers';
 import { smart_contracts } from '../../database/models/smart_contracts';
 import { convertHashToBuffer } from '../../utils/address';
