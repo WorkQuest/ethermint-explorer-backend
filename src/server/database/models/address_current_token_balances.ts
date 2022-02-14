@@ -1,6 +1,7 @@
 import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { addresses } from './addresses';
 import { tokens } from './tokens';
+import { parseBufferedAddress } from '../../utils/address';
 
 @Table
 export class address_current_token_balances extends Model {
@@ -8,7 +9,15 @@ export class address_current_token_balances extends Model {
   id: string;
 
   @ForeignKey(() => addresses)
-  @Column({ type: DataType.BLOB, allowNull: false })
+  @Column({
+    type: DataType.BLOB,
+    allowNull: false,
+    get() {
+      const bufferedAddress = this.getDataValue('address_hash');
+
+      return parseBufferedAddress(bufferedAddress);
+    },
+  })
   address_hash: any;
 
   @Column({ type: DataType.BIGINT, allowNull: false })

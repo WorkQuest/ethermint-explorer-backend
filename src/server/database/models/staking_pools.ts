@@ -1,4 +1,5 @@
 import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { parseBufferedAddress } from '../../utils/address';
 
 @Table
 export class staking_pools extends Model {
@@ -38,7 +39,14 @@ export class staking_pools extends Model {
   @Column({ type: DataType.DECIMAL(5, 2) })
   likelihood: string;
 
-  @Column({ type: DataType.BLOB })
+  @Column({
+    type: DataType.BLOB,
+    get() {
+      const bufferedAddress = this.getDataValue('mining_address_hash');
+
+      return parseBufferedAddress(bufferedAddress);
+    },
+  })
   mining_address_hash: any;
 
   @Column({ type: DataType.DECIMAL(100) })

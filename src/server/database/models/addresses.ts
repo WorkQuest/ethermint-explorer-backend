@@ -1,4 +1,5 @@
 import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { parseBufferedAddress } from '../../utils/address';
 
 @Table
 export class addresses extends Model {
@@ -8,7 +9,16 @@ export class addresses extends Model {
   @Column({ type: DataType.BIGINT })
   fetched_coin_balance_block_number: string;
 
-  @Column({ type: DataType.BLOB, primaryKey: true, allowNull: false })
+  @Column({
+    type: DataType.BLOB,
+    primaryKey: true,
+    allowNull: false,
+    get() {
+      const bufferedAddress = this.getDataValue('hash');
+
+      return parseBufferedAddress(bufferedAddress);
+    },
+  })
   hash: any;
 
   @Column({ type: DataType.BLOB })

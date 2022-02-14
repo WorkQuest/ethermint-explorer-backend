@@ -1,6 +1,9 @@
-import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table } from 'sequelize-typescript';
 import { blocks } from './blocks';
 import { addresses } from './addresses';
+import { smart_contracts } from './smart_contracts';
+import { parseBufferedAddress } from '../../utils/address';
+import { token_transfers } from './token_transfers';
 
 @Table
 export class transactions extends Model {
@@ -60,15 +63,39 @@ export class transactions extends Model {
   block_number: number;
 
   @ForeignKey(() => addresses)
-  @Column({ type: DataType.BLOB, allowNull: false, onDelete: 'cascade' })
+  @Column({
+    type: DataType.BLOB,
+    allowNull: false,
+    onDelete: 'cascade',
+    get() {
+      const bufferedAddress = this.getDataValue('from_address_hash');
+
+      return parseBufferedAddress(bufferedAddress);
+    },
+  })
   from_address_hash: any;
 
   @ForeignKey(() => addresses)
-  @Column({ type: DataType.BLOB, onDelete: 'cascade' })
+  @Column({
+    type: DataType.BLOB,
+    onDelete: 'cascade',
+    get() {
+      const bufferedAddress = this.getDataValue('to_address_hash');
+
+      return parseBufferedAddress(bufferedAddress);
+    },
+  })
   to_address_hash: any;
 
   @ForeignKey(() => addresses)
-  @Column({ type: DataType.BLOB })
+  @Column({
+    type: DataType.BLOB,
+    get() {
+      const bufferedAddress = this.getDataValue('created_contract_address_hash');
+
+      return parseBufferedAddress(bufferedAddress);
+    },
+  })
   created_contract_address_hash: any;
 
   @Column({ type: 'TIMESTAMP' })
@@ -91,4 +118,10 @@ export class transactions extends Model {
 
   @Column({ type: DataType.INTEGER })
   type: number;
+
+  @BelongsTo(() => addresses) from_address: addresses;
+  @BelongsTo(() => addresses) to_address: addresses;
+  @BelongsTo(() => smart_contracts) contract: smart_contracts;
+  @BelongsTo(() => blocks) block: blocks;
+  @HasMany(() => token_transfers) token_transfers: token_transfers[];
 }

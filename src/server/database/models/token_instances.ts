@@ -1,5 +1,6 @@
 import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { tokens } from './tokens';
+import { parseBufferedAddress } from '../../utils/address';
 
 @Table
 export class token_instances extends Model {
@@ -7,7 +8,16 @@ export class token_instances extends Model {
   token_id: string;
 
   @ForeignKey(() => tokens)
-  @Column({ type: DataType.BLOB, allowNull: false, primaryKey: true })
+  @Column({
+    type: DataType.BLOB,
+    allowNull: false,
+    primaryKey: true,
+    get() {
+      const bufferedAddress = this.getDataValue('token_contract_address_hash');
+
+      return parseBufferedAddress(bufferedAddress);
+    },
+  })
   token_contract_address_hash: any;
 
   @Column({ type: DataType.JSONB })

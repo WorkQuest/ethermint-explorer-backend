@@ -1,5 +1,6 @@
 import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { addresses } from './addresses';
+import { parseBufferedAddress } from '../../utils/address';
 
 @Table
 export class smart_contracts extends Model {
@@ -22,7 +23,16 @@ export class smart_contracts extends Model {
   abi: object;
 
   @ForeignKey(() => addresses)
-  @Column({ type: DataType.BLOB, allowNull: false, onDelete: 'cascade' })
+  @Column({
+    type: DataType.BLOB,
+    allowNull: false,
+    onDelete: 'cascade',
+    get() {
+      const bufferedAddress = this.getDataValue('address_hash');
+
+      return parseBufferedAddress(bufferedAddress);
+    },
+  })
   address_hash: any;
 
   @Column({ type: 'TIMESTAMP', allowNull: false })

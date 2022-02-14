@@ -2,6 +2,7 @@ import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript
 import { addresses } from './addresses';
 import { transactions } from './transactions';
 import { blocks } from './blocks';
+import { parseBufferedAddress } from '../../utils/address';
 
 @Table
 export class internal_transactions extends Model {
@@ -48,15 +49,36 @@ export class internal_transactions extends Model {
   updated_at: Date;
 
   @ForeignKey(() => addresses)
-  @Column({ type: DataType.BLOB })
+  @Column({
+    type: DataType.BLOB,
+    get() {
+      const bufferedAddress = this.getDataValue('created_contract_address_hash');
+
+      return parseBufferedAddress(bufferedAddress);
+    },
+  })
   created_contract_address_hash: any;
 
   @ForeignKey(() => addresses)
-  @Column({ type: DataType.BLOB })
+  @Column({
+    type: DataType.BLOB,
+    get() {
+      const bufferedAddress = this.getDataValue('from_address_hash');
+
+      return parseBufferedAddress(bufferedAddress);
+    },
+  })
   from_address_hash: any;
 
   @ForeignKey(() => addresses)
-  @Column({ type: DataType.BLOB })
+  @Column({
+    type: DataType.BLOB,
+    get() {
+      const bufferedAddress = this.getDataValue('to_address_hash');
+
+      return parseBufferedAddress(bufferedAddress);
+    },
+  })
   to_address_hash: any;
 
   @ForeignKey(() => transactions)

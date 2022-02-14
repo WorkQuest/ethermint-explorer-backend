@@ -2,6 +2,7 @@ import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript
 import { addresses } from './addresses';
 import { transactions } from './transactions';
 import { blocks } from './blocks';
+import { parseBufferedAddress } from '../../utils/address';
 
 @Table
 export class logs extends Model {
@@ -33,7 +34,15 @@ export class logs extends Model {
   updated_at: Date;
 
   @ForeignKey(() => addresses)
-  @Column({ type: DataType.BLOB, onDelete: 'cascade' })
+  @Column({
+    type: DataType.BLOB,
+    onDelete: 'cascade',
+    get() {
+      const bufferedAddress = this.getDataValue('address_hash');
+
+      return parseBufferedAddress(bufferedAddress);
+    },
+  })
   address_hash: any;
 
   @ForeignKey(() => transactions)

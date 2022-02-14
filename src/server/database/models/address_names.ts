@@ -1,8 +1,17 @@
 import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { parseBufferedAddress } from '../../utils/address';
 
 @Table
 export class address_names extends Model {
-  @Column({ type: DataType.BLOB, allowNull: false })
+  @Column({
+    type: DataType.BLOB,
+    allowNull: false,
+    get() {
+      const bufferedAddress = this.getDataValue('address_hash');
+
+      return parseBufferedAddress(bufferedAddress);
+    },
+  })
   address_hash: any;
 
   @Column({ type: DataType.STRING, allowNull: false })

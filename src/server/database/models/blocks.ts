@@ -1,4 +1,6 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
+import { transactions } from './transactions';
+import { parseBufferedAddress } from '../../utils/address';
 
 @Table
 export class blocks extends Model {
@@ -17,7 +19,15 @@ export class blocks extends Model {
   @Column({ type: DataType.BLOB, allowNull: false, primaryKey: true })
   hash: any;
 
-  @Column({ type: DataType.BLOB, allowNull: false })
+  @Column({
+    type: DataType.BLOB,
+    allowNull: false,
+    get() {
+      const bufferedAddress = this.getDataValue('miner_hash');
+
+      return parseBufferedAddress(bufferedAddress);
+    },
+  })
   miner_hash: any;
 
   @Column({ type: DataType.BLOB, allowNull: false })
@@ -49,4 +59,7 @@ export class blocks extends Model {
 
   @Column({ type: DataType.DECIMAL(100) })
   base_fee_per_gas: string;
+
+  @HasMany(() => transactions)
+  transactions: transactions[];
 }

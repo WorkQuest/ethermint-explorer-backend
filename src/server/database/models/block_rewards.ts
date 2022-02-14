@@ -1,11 +1,20 @@
 import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { addresses } from './addresses';
 import { blocks } from './blocks';
+import { parseBufferedAddress } from '../../utils/address';
 
 @Table
 export class block_rewards extends Model {
   @ForeignKey(() => addresses)
-  @Column({ type: DataType.BLOB, allowNull: false })
+  @Column({
+    type: DataType.BLOB,
+    allowNull: false,
+    get() {
+      const bufferedAddress = this.getDataValue('address_hash');
+
+      return parseBufferedAddress(bufferedAddress);
+    },
+  })
   address_hash: any;
 
   @Column({ type: DataType.STRING, allowNull: false })
