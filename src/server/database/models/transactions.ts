@@ -37,7 +37,7 @@ export class transactions extends Model {
   r: string;
 
   @Column({ type: DataType.DECIMAL(100), allowNull: false })
-  S: string;
+  s: string;
 
   @Column({ type: DataType.INTEGER })
   status: number;
