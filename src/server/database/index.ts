@@ -70,6 +70,10 @@ export async function initDatabase(){
       users,
       logs,
     ],
+    define: {
+      createdAt: 'inserted_at',
+      updatedAt: 'updated_at',
+    }
   });
   await sequelize.sync();
   return sequelize;
