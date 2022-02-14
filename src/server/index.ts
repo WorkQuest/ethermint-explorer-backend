@@ -14,7 +14,7 @@ import { handleValidationError, responseHandler, } from './utils';
 import SwaggerOptions from './config/swagger';
 import { pinoConfig, } from './config/pino';
 import { run } from 'graphile-worker';
-import { initDatabase } from './models';
+import { initDatabase } from './database';
 
 const HapiSwagger = require('hapi-swagger');
 const Package = require('../../package.json');

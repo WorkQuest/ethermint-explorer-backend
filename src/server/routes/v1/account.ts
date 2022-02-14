@@ -1,4 +1,4 @@
-import { getAccountBalances, getAccountByAddress } from '../../api/v1/account';
+import { getAccountByAddress } from '../../api/v1/account';
 import * as Joi from 'joi';
 import { addressSchema, paginationSchema } from '../../schemes';
 export default [{
@@ -15,19 +15,21 @@ export default [{
       }).label('GetAccountByAddressParams')
     }
   }
-}, {
-  method: 'GET',
-  path: '/v1/account/{address}/balances',
-  handler: getAccountBalances,
-  options: {
-    id: 'v1.account.getAccountBalances',
-    tags: ['api', 'account'],
-    description: 'Get account balances',
-    validate: {
-      params: Joi.object({
-        address: addressSchema.required()
-      }).label('GetAccountBalancesParams'),
-      query: paginationSchema
-    }
-  }
-}]
+},
+// {
+//   method: 'GET',
+//   path: '/v1/account/{address}/balances',
+//   handler: getAccountBalances,
+//   options: {
+//     id: 'v1.account.getAccountBalances',
+//     tags: ['api', 'account'],
+//     description: 'Get account balances',
+//     validate: {
+//       params: Joi.object({
+//         address: addressSchema.required()
+//       }).label('GetAccountBalancesParams'),
+//       query: paginationSchema
+//     }
+//   }
+// }
+]

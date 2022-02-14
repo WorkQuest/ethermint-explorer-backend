@@ -1,5 +1,5 @@
 import { addJob } from '../utils/scheduler';
-import { Event } from '../models/Event';
+// import { Event } from '../models/Event';
 import parseERC20Event from './parseERC20Event';
 
 export interface ParseHistoricalERC20Events {
@@ -11,16 +11,16 @@ export async function addParseHistoricalERC20Events(p: ParseHistoricalERC20Event
 }
 
 export default async function(p: ParseHistoricalERC20Events) {
-  let events = await Event.findAll({
-    where: {
-      contractAddress: p.tokenId
-    }
-  });
-
-  if (events.length === 0)
-    return true;
-
-  for (const event of events) {
-    await parseERC20Event({eventId: event.id})
-  }
+  // let events = await Event.findAll({
+  //   where: {
+  //     contractAddress: p.tokenId
+  //   }
+  // });
+  //
+  // if (events.length === 0)
+  //   return true;
+  //
+  // for (const event of events) {
+  //   await parseERC20Event({eventId: event.id})
+  // }
 }
