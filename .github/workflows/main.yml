@@ -2,7 +2,7 @@ name: Node-CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, develop ]
 
 jobs:
   build:
@@ -25,8 +25,9 @@ jobs:
       - name: Run build task
         run: npm run build
 
-  deploy:
-    environment: develop
+  deploy-prod:
+    environment: production
+    if: "github.ref == 'refs/heads/master'"
     runs-on: ubuntu-18.04
     needs: [build]
 
@@ -50,12 +51,48 @@ jobs:
           chmod 700 ci-scripts
           cd ci-scripts
           ansible-playbook -i "${{ secrets.REMOTE_HOST }}" -e "ansible_user=${{ secrets.REMOTE_USER }} \
-            DB_LINK=${{ secrets.DB_LINK }} \
-            SERVER_HOST=${{ secrets.SERVER_HOST }} \
-            SERVER_PORT=${{ secrets.SERVER_PORT }} \
+            DB_LINK=${{ secrets.PROD_DB_LINK }} \
+            SERVER_HOST=${{ secrets.PROD_SERVER_HOST }} \
+            SERVER_PORT=${{ secrets.PROD_SERVER_PORT }} \
 
-            RPC_URL=${{ secrets.RPC_URL }} \
-            WS_URL=${{ secrets.WS_URL }} \
-            DEFAULT_COIN=${{ secrets.DEFAULT_COIN }} \
+            RPC_URL=${{ secrets.PROD_RPC_URL }} \
+            WS_URL=${{ secrets.PROD_WS_URL }} \
+            DEFAULT_COIN=${{ secrets.PROD_DEFAULT_COIN }} \
 
+            SRC_DIR=${{ github.workspace }}/" backend-update.yml;
+
+  deploy-dev:
+    environment: develop
+    if: "github.ref == 'refs/heads/develop'"
+    runs-on: ubuntu-18.04
+    needs: [build]
+
+    steps:
+      - name: Copy code files to container
+        uses: actions/checkout@v2
+
+      - name: Environment preparation
+        run: |
+          mkdir -p ~/.ssh/
+          touch ~/.ssh/id_rsa
+          chmod -R go= ~/.ssh
+          chmod 600 ~/.ssh/id_rsa
+          echo "${{ secrets.SERVER_SSH_KEY }}" >> ~/.ssh/id_rsa
+          sudo apt-add-repository -y -u ppa:ansible/ansible
+          sudo apt-get install -y rsync
+          sudo apt-get install -y ansible
+
+      - name: Deploy to Server
+        run: |
+          chmod 700 ci-scripts
+          cd ci-scripts
+          ansible-playbook -i "${{ secrets.REMOTE_HOST }}" -e "ansible_user=${{ secrets.REMOTE_USER }} \
+            DB_LINK=${{ secrets.DEV_DB_LINK }} \
+            SERVER_HOST=${{ secrets.DEV_SERVER_HOST }} \
+            SERVER_PORT=${{ secrets.DEV_SERVER_PORT }} \
+          
+            RPC_URL=${{ secrets.DEV_RPC_URL }} \
+            WS_URL=${{ secrets.DEV_WS_URL }} \
+            DEFAULT_COIN=${{ secrets.DEV_DEFAULT_COIN }} \
+          
             SRC_DIR=${{ github.workspace }}/" backend-update.yml;
