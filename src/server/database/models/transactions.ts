@@ -119,9 +119,9 @@ export class transactions extends Model {
   @Column({ type: DataType.INTEGER })
   type: number;
 
-  @BelongsTo(() => addresses) from_address: addresses;
-  @BelongsTo(() => addresses) to_address: addresses;
-  @BelongsTo(() => smart_contracts) contract: smart_contracts;
+  @BelongsTo(() => addresses, 'from_address_hash') from_address: addresses;
+  @BelongsTo(() => addresses, 'to_address_hash') to_address: addresses;
+  @BelongsTo(() => addresses, 'created_contract_address_hash') contract: addresses;
   @BelongsTo(() => blocks) block: blocks;
   @HasMany(() => token_transfers) token_transfers: token_transfers[];
 }
