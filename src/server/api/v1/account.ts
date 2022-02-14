@@ -3,7 +3,11 @@ import { addresses } from '../../database/models/addresses';
 import { Errors } from '../../utils/errors';
 
 export async function getAccountByAddress(r) {
-  const account = await addresses.findByPk(r.params.address.toUpperCase());
+  const addressWithPrefix = new Buffer(r.params.address.toUpperCase(), "hex");
+  const accountWithPrefix = await addresses.findByPk(addressWithPrefix);
+
+  const addressWithoutPrefix = new Buffer(r.params.address.slice(2).toUpperCase(), "hex")
+  const accountWithoutPrefix = await addresses.findByPk(addressWithoutPrefix);
   // if (!account) return output({
   //   address: r.params.address,
   //   txsCount: 0,
@@ -14,7 +18,7 @@ export async function getAccountByAddress(r) {
   //   balances: []
   // })
 
-  return output(account);
+  return output({ accountWithPrefix, accountWithoutPrefix });
 }
 
 // export async function getAccountBalances(r) {
