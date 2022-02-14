@@ -58,6 +58,8 @@ jobs:
             RPC_URL=${{ secrets.PROD_RPC_URL }} \
             WS_URL=${{ secrets.PROD_WS_URL }} \
             DEFAULT_COIN=${{ secrets.PROD_DEFAULT_COIN }} \
+          
+            backend_bin=${{ secrets.BACKEND_BIN }} \
 
             SRC_DIR=${{ github.workspace }}/" backend-update.yml;
 
@@ -94,5 +96,7 @@ jobs:
             RPC_URL=${{ secrets.DEV_RPC_URL }} \
             WS_URL=${{ secrets.DEV_WS_URL }} \
             DEFAULT_COIN=${{ secrets.DEV_DEFAULT_COIN }} \
+          
+            backend_bin=${{ secrets.BACKEND_BIN }} \
           
             SRC_DIR=${{ github.workspace }}/" backend-update.yml;
