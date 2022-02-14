@@ -3,7 +3,7 @@ import { addresses } from '../../database/models/addresses';
 import { Errors } from '../../utils/errors';
 
 export async function getAccountByAddress(r) {
-  let account = await addresses.findByPk(r.params.address);
+  const account = await addresses.findByPk(r.params.address.toUpperCase());
   // if (!account) return output({
   //   address: r.params.address,
   //   txsCount: 0,
