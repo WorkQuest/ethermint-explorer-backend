@@ -2,7 +2,7 @@ import converter from 'bech32-converting';
 import { Buffer } from 'buffer';
 
 export function parseBufferedAddress(address: Buffer) {
-  const hex = address.toString('utf8');
+  const hex = address.toString('hex');
   const bech32 = converter('wq').toBech32('0x' + hex);
 
   return { hex, bech32 };
