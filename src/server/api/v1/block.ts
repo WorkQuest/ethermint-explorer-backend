@@ -12,7 +12,8 @@ export async function getBlocks(r) {
     include: [{
       model: transactions,
       as: 'transactions',
-      attributes: []
+      attributes: [],
+      required: false
     }],
     limit: r.query.limit,
     offset: r.query.offset,
