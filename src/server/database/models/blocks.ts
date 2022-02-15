@@ -39,7 +39,15 @@ export class blocks extends Model {
   })
   miner_hash: any;
 
-  @Column({ type: DataType.BLOB, allowNull: false })
+  @Column({
+    type: DataType.BLOB,
+    allowNull: false,
+    get() {
+      const bufferedHash = this.getDataValue('nonce');
+
+      return parseBufferedHash(bufferedHash);
+    },
+  })
   nonce: any;
 
   @Column({ type: DataType.BIGINT, allowNull: false })
