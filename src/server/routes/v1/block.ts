@@ -16,7 +16,7 @@ export default [{
   }
 }, {
   method: 'GET',
-  path: '/v1/block/{blockId}',
+  path: '/v1/block/{blockNumber}',
   handler: getBlockById,
   options: {
     id: 'v1.block.getById',
