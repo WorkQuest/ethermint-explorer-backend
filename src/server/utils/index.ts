@@ -1,10 +1,8 @@
 import { v4 as uuidv4, } from 'uuid';
 import { Boom, } from '@hapi/boom';
 import * as speakeasy from 'speakeasy';
-import config from '../config/config';
 
 export const nullAddress = '0x0000000000000000000000000000000000000000';
-
 
 export function getUUID(): string {
   return uuidv4();

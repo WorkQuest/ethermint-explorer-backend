@@ -6,10 +6,20 @@ export function parseBufferedAddress(address: Buffer) {
     return null;
   }
 
-  const hex = address.toString('hex');
-  const bech32 = converter('wq').toBech32('0x' + hex);
+  const hex = '0x' + address.toString('hex');
+  const bech32 = converter('wq').toBech32(hex);
 
   return { hex, bech32 };
+}
+
+export function parseBufferedHash(hash: Buffer) {
+  if (!hash) {
+    return null;
+  }
+
+  const hex = '0x' + hash.toString('hex');
+
+  return hex;
 }
 
 export function convertHashToBuffer(address: string): Buffer {

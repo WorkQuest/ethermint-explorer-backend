@@ -1,7 +1,7 @@
 import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { addresses } from './addresses';
 import { blocks } from './blocks';
-import { parseBufferedAddress } from '../../utils/address';
+import { parseBufferedAddress, parseBufferedHash } from '../../utils/address';
 
 @Table
 export class block_rewards extends Model {
@@ -21,7 +21,16 @@ export class block_rewards extends Model {
   address_type: string;
 
   @ForeignKey(() => blocks)
-  @Column({ type: DataType.BLOB, allowNull: false, onDelete: 'cascade' })
+  @Column({
+    type: DataType.BLOB,
+    allowNull: false,
+    onDelete: 'cascade',
+    get() {
+      const bufferedHash = this.getDataValue('block_hash');
+
+      return parseBufferedHash(bufferedHash);
+    },
+  })
   block_hash: any;
 
   @Column({ type: DataType.DECIMAL(100) })

@@ -1,6 +1,6 @@
 import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
 import { transactions } from './transactions';
-import { parseBufferedAddress } from '../../utils/address';
+import { parseBufferedAddress, parseBufferedHash } from '../../utils/address';
 
 @Table
 export class blocks extends Model {
@@ -16,7 +16,16 @@ export class blocks extends Model {
   @Column({ type: DataType.DECIMAL(100), allowNull: false })
   gas_used: string;
 
-  @Column({ type: DataType.BLOB, allowNull: false, primaryKey: true })
+  @Column({
+    type: DataType.BLOB,
+    allowNull: false,
+    primaryKey: true,
+    get() {
+      const bufferedHash = this.getDataValue('hash');
+
+      return parseBufferedHash(bufferedHash);
+    },
+  })
   hash: any;
 
   @Column({
@@ -36,7 +45,15 @@ export class blocks extends Model {
   @Column({ type: DataType.BIGINT, allowNull: false })
   number: string;
 
-  @Column({ type: DataType.BLOB, allowNull: false })
+  @Column({
+    type: DataType.BLOB,
+    allowNull: false,
+    get() {
+      const bufferedHash = this.getDataValue('parent_hash');
+
+      return parseBufferedHash(bufferedHash);
+    },
+  })
   parent_hash: any;
 
   @Column({ type: DataType.INTEGER })

@@ -64,7 +64,14 @@ export class staking_pools extends Model {
   @Column({ type: DataType.DECIMAL(5, 2) })
   stakes_ratio: string;
 
-  @Column({ type: DataType.BLOB })
+  @Column({
+    type: DataType.BLOB,
+    get() {
+      const bufferedAddress = this.getDataValue('staking_address_hash');
+
+      return parseBufferedAddress(bufferedAddress);
+    },
+  })
   staking_address_hash: any;
 
   @Column({ type: DataType.DECIMAL(100) })

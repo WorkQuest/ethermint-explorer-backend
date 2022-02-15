@@ -2,12 +2,22 @@ import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript
 import { transactions } from './transactions';
 import { addresses } from './addresses';
 import { blocks } from './blocks';
-import { parseBufferedAddress } from '../../utils/address';
+import { parseBufferedAddress, parseBufferedHash } from '../../utils/address';
 
 @Table
 export class token_transfers extends Model {
   @ForeignKey(() => transactions)
-  @Column({ type: DataType.BLOB, allowNull: false, onDelete: 'cascade', primaryKey: true })
+  @Column({
+    type: DataType.BLOB,
+    allowNull: false,
+    onDelete: 'cascade',
+    primaryKey: true,
+    get() {
+      const bufferedHash = this.getDataValue('transaction_hash');
+
+      return parseBufferedHash(bufferedHash);
+    },
+  })
   transaction_hash: string;
 
   @Column({ type: DataType.INTEGER, allowNull: false, primaryKey: true })
@@ -62,6 +72,15 @@ export class token_transfers extends Model {
   block_number: number;
 
   @ForeignKey(() => blocks)
-  @Column({ type: DataType.BLOB, allowNull: false, primaryKey: true })
+  @Column({
+    type: DataType.BLOB,
+    allowNull: false,
+    primaryKey: true,
+    get() {
+      const bufferedHash = this.getDataValue('block_hash');
+
+      return parseBufferedHash(bufferedHash);
+    },
+  })
   block_hash: any;
 }

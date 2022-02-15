@@ -1,7 +1,7 @@
 import { BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table } from 'sequelize-typescript';
 import { blocks } from './blocks';
 import { addresses } from './addresses';
-import { parseBufferedAddress } from '../../utils/address';
+import { parseBufferedAddress, parseBufferedHash } from '../../utils/address';
 import { token_transfers } from './token_transfers';
 
 @Table
@@ -21,13 +21,30 @@ export class transactions extends Model {
   @Column({ type: DataType.DECIMAL(100) })
   gas_used: string;
 
-  @Column({ type: DataType.BLOB, allowNull: false, primaryKey: true })
+  @Column({
+    type: DataType.BLOB,
+    allowNull: false,
+    primaryKey: true,
+    get() {
+      const bufferedHash = this.getDataValue('hash');
+
+      return parseBufferedHash(bufferedHash);
+    },
+  })
   hash: any;
 
   @Column({ type: DataType.INTEGER })
   index: number;
 
-  @Column({ type: DataType.BLOB, allowNull: false })
+  @Column({
+    type: DataType.BLOB,
+    allowNull: false,
+    get() {
+      const bufferedHash = this.getDataValue('input');
+
+      return parseBufferedHash(bufferedHash);
+    },
+  })
   input: any;
 
   @Column({ type: DataType.INTEGER, allowNull: false })
@@ -55,7 +72,15 @@ export class transactions extends Model {
   updated_at: Date;
 
   @ForeignKey(() => blocks)
-  @Column({ type: DataType.BLOB, onDelete: 'cascade' })
+  @Column({
+    type: DataType.BLOB,
+    onDelete: 'cascade',
+    get() {
+      const bufferedHash = this.getDataValue('block_hash');
+
+      return parseBufferedHash(bufferedHash);
+    },
+  })
   block_hash: any;
 
   @Column({ type: DataType.INTEGER })
@@ -103,7 +128,14 @@ export class transactions extends Model {
   @Column({ type: 'TIMESTAMP' })
   earliest_processing_start: Date;
 
-  @Column({ type: DataType.BLOB })
+  @Column({
+    type: DataType.BLOB,
+    get() {
+      const bufferedHash = this.getDataValue('old_block_hash');
+
+      return parseBufferedHash(bufferedHash);
+    },
+  })
   old_block_hash: any;
 
   @Column({ type: DataType.TEXT })

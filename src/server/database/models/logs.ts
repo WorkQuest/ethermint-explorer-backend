@@ -2,11 +2,19 @@ import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript
 import { addresses } from './addresses';
 import { transactions } from './transactions';
 import { blocks } from './blocks';
-import { parseBufferedAddress } from '../../utils/address';
+import { parseBufferedAddress, parseBufferedHash } from '../../utils/address';
 
 @Table
 export class logs extends Model {
-  @Column({ type: DataType.BLOB, allowNull: false })
+  @Column({
+    type: DataType.BLOB,
+    allowNull: false,
+    get() {
+      const bufferedHash = this.getDataValue('data');
+
+      return parseBufferedHash(bufferedHash);
+    },
+  })
   data: any;
 
   @Column({ type: DataType.INTEGER, allowNull: false, primaryKey: true })
@@ -46,11 +54,30 @@ export class logs extends Model {
   address_hash: any;
 
   @ForeignKey(() => transactions)
-  @Column({ type: DataType.BLOB, allowNull: false, onDelete: 'cascade', primaryKey: true })
+  @Column({
+    type: DataType.BLOB,
+    allowNull: false,
+    onDelete: 'cascade',
+    primaryKey: true,
+    get() {
+      const bufferedHash = this.getDataValue('transaction_hash');
+
+      return parseBufferedHash(bufferedHash);
+    },
+  })
   transaction_hash: string;
 
   @ForeignKey(() => blocks)
-  @Column({ type: DataType.BLOB, allowNull: false, primaryKey: true })
+  @Column({
+    type: DataType.BLOB,
+    allowNull: false,
+    primaryKey: true,
+    get() {
+      const bufferedHash = this.getDataValue('block_hash');
+
+      return parseBufferedHash(bufferedHash);
+    },
+  })
   block_hash: any;
 
   @Column({ type: DataType.INTEGER })

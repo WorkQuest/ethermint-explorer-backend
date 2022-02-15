@@ -2,14 +2,21 @@ import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript
 import { addresses } from './addresses';
 import { transactions } from './transactions';
 import { blocks } from './blocks';
-import { parseBufferedAddress } from '../../utils/address';
+import { parseBufferedAddress, parseBufferedHash } from '../../utils/address';
 
 @Table
 export class internal_transactions extends Model {
   @Column({ type: DataType.STRING })
   call_type: string;
 
-  @Column({ type: DataType.BLOB })
+  @Column({
+    type: DataType.BLOB,
+    get() {
+      const bufferedHash = this.getDataValue('created_contract_code');
+
+      return parseBufferedHash(bufferedHash);
+    },
+  })
   created_contract_code: any;
 
   @Column({ type: DataType.STRING })
@@ -24,13 +31,34 @@ export class internal_transactions extends Model {
   @Column({ type: DataType.INTEGER, allowNull: false })
   index: number;
 
-  @Column({ type: DataType.BLOB })
+  @Column({
+    type: DataType.BLOB,
+    get() {
+      const bufferedHash = this.getDataValue('init');
+
+      return parseBufferedHash(bufferedHash);
+    },
+  })
   init: any;
 
-  @Column({ type: DataType.BLOB })
+  @Column({
+    type: DataType.BLOB,
+    get() {
+      const bufferedHash = this.getDataValue('input');
+
+      return parseBufferedHash(bufferedHash);
+    },
+  })
   input: any;
 
-  @Column({ type: DataType.BLOB })
+  @Column({
+    type: DataType.BLOB,
+    get() {
+      const bufferedHash = this.getDataValue('output');
+
+      return parseBufferedHash(bufferedHash);
+    },
+  })
   output: any;
 
   @Column({ type: DataType.ARRAY(DataType.INTEGER), allowNull: false })
@@ -82,7 +110,16 @@ export class internal_transactions extends Model {
   to_address_hash: any;
 
   @ForeignKey(() => transactions)
-  @Column({ type: DataType.BLOB, allowNull: false, onDelete: 'cascade' })
+  @Column({
+    type: DataType.BLOB,
+    allowNull: false,
+    onDelete: 'cascade',
+    get() {
+      const bufferedHash = this.getDataValue('transaction_hash');
+
+      return parseBufferedHash(bufferedHash);
+    },
+  })
   transaction_hash: string;
 
   @Column({ type: DataType.INTEGER })
@@ -92,7 +129,16 @@ export class internal_transactions extends Model {
   transaction_index: number;
 
   @ForeignKey(() => blocks)
-  @Column({ type: DataType.BLOB, allowNull: false, primaryKey: true })
+  @Column({
+    type: DataType.BLOB,
+    allowNull: false,
+    primaryKey: true,
+    get() {
+      const bufferedHash = this.getDataValue('block_hash');
+
+      return parseBufferedHash(bufferedHash);
+    },
+  })
   block_hash: any;
 
   @Column({ type: DataType.INTEGER, allowNull: false, primaryKey: true })

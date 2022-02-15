@@ -24,7 +24,15 @@ export class address_token_balances extends Model {
   block_number: string;
 
   @ForeignKey(() => tokens)
-  @Column({ type: DataType.BLOB, allowNull: false })
+  @Column({
+    type: DataType.BLOB,
+    allowNull: false,
+    get() {
+      const bufferedAddress = this.getDataValue('token_contract_address_hash');
+
+      return parseBufferedAddress(bufferedAddress);
+    },
+  })
   token_contract_address_hash: any;
 
   @Column({ type: DataType.DECIMAL, defaultValue: null })

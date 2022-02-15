@@ -1,5 +1,5 @@
 import { Column, DataType, Model, Table } from 'sequelize-typescript';
-import { parseBufferedAddress } from '../../utils/address';
+import { parseBufferedAddress, parseBufferedHash } from '../../utils/address';
 
 @Table
 export class addresses extends Model {
@@ -21,7 +21,14 @@ export class addresses extends Model {
   })
   hash: any;
 
-  @Column({ type: DataType.BLOB })
+  @Column({
+    type: DataType.BLOB,
+    get() {
+      const bufferedHash = this.getDataValue('contract_code');
+
+      return parseBufferedHash(bufferedHash);
+    },
+  })
   contract_code: any;
 
   @Column({ type: 'TIMESTAMP', allowNull: false })
