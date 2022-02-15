@@ -4,7 +4,6 @@ import { transactions } from '../../database/models/transactions';
 import { addresses } from '../../database/models/addresses';
 import { blocks } from '../../database/models/blocks';
 import { token_transfers } from '../../database/models/token_transfers';
-import { smart_contracts } from '../../database/models/smart_contracts';
 import { convertHashToBuffer } from '../../utils/address';
 
 export async function getAllTxs(r) {
@@ -30,7 +29,7 @@ export async function getTxByHash(r) {
       model: addresses,
       as: 'to_address'
     }, {
-      model: smart_contracts,
+      model: addresses,
       as: 'contract'
     }, {
       model: token_transfers,
