@@ -2,9 +2,18 @@ import { error, output } from '../../utils';
 import { Errors } from '../../utils/errors';
 import { blocks } from '../../database/models/blocks';
 import { transactions } from '../../database/models/transactions';
+import { col, fn } from 'sequelize';
 
 export async function getBlocks(r) {
   const { count, rows } = await blocks.findAndCountAll({
+    attributes: {
+      include: [[fn('COUNT', col('transactions')), 'transactions_count']]
+    },
+    include: [{
+      model: transactions,
+      as: 'transactions',
+      attributes: []
+    }],
     limit: r.query.limit,
     offset: r.query.offset,
     order: [['timestamp', 'DESC']]
