@@ -25,7 +25,7 @@ export default [{
     description: 'Get tx by hash',
     validate: {
       params: Joi.object({
-        hash: hashSchema.required()
+        hash: Joi.string().required()
       }).label('GetTxByHashParams')
     }
   }
@@ -39,7 +39,7 @@ export default [{
     description: 'Get txs by account',
     validate: {
       params: Joi.object({
-        address: addressSchema.required()
+        address: Joi.string().required()
       }).label('GetAllAccountTxsParams')
     }
   }

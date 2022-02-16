@@ -6,13 +6,9 @@ import { col, fn } from 'sequelize';
 
 export async function getBlocks(r) {
   const { count, rows } = await blocks.findAndCountAll({
-    attributes: {
-      include: [[fn('COUNT', col('"transactions"."hash"')), 'transactions_count']]
-    },
     include: [{
       model: transactions,
       as: 'transactions',
-      attributes: [],
       required: false
     }],
     limit: r.query.limit,

@@ -24,7 +24,7 @@ export default [{
     description: 'Get block by id',
     validate: {
       params: Joi.object({
-        blockNumber: blockIdSchema.required()
+        blockNumber: Joi.string().required()
       }).label('GetBlockByIdParams')
     }
   }

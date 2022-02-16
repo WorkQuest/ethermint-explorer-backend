@@ -12,7 +12,7 @@ export default [{
     description: 'Get account by address',
     validate: {
       params: Joi.object({
-        address: addressSchema.required()
+        address: Joi.string().required()
       }).label('GetAccountByAddressParams')
     }
   }
