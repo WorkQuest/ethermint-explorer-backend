@@ -55,10 +55,14 @@ jobs:
             SERVER_HOST=${{ secrets.PROD_SERVER_HOST }} \
             SERVER_PORT=${{ secrets.PROD_SERVER_PORT }} \
 
+            BASE_URL=${{ secrets.PROD_BASE_URL }} \
+
+            LOCAL=${{ secrets.PROD_LOCAL }} \
+
             RPC_URL=${{ secrets.PROD_RPC_URL }} \
             WS_URL=${{ secrets.PROD_WS_URL }} \
             DEFAULT_COIN=${{ secrets.PROD_DEFAULT_COIN }} \
-          
+
             backend_bin=${{ secrets.BACKEND_BIN }} \
 
             SRC_DIR=${{ github.workspace }}/" backend-update.yml;
@@ -92,11 +96,15 @@ jobs:
             DB_LINK=${{ secrets.DEV_DB_LINK }} \
             SERVER_HOST=${{ secrets.DEV_SERVER_HOST }} \
             SERVER_PORT=${{ secrets.DEV_SERVER_PORT }} \
-          
+
+            BASE_URL=${{ secrets.DEV_BASE_URL }} \
+
+            LOCAL=${{ secrets.DEV_LOCAL }} \
+
             RPC_URL=${{ secrets.DEV_RPC_URL }} \
             WS_URL=${{ secrets.DEV_WS_URL }} \
             DEFAULT_COIN=${{ secrets.DEV_DEFAULT_COIN }} \
-          
+
             backend_bin=${{ secrets.BACKEND_BIN }} \
-          
+
             SRC_DIR=${{ github.workspace }}/" backend-update.yml;
