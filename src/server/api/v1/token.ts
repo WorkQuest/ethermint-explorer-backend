@@ -1,11 +1,15 @@
 import { token_transfers } from '../../database/models/token_transfers'
 import { output } from '../../utils';
+import { convertHashToBuffer } from '../../utils/address';
 
 export async function getTokenTransfers(r) {
-  let { count, rows } = await token_transfers.findAndCountAll({
+  const address = convertHashToBuffer(r.params.address);
+
+  const { count, rows } = await token_transfers.findAndCountAll({
+    where: { token_contract_address_hash: address },
     limit: r.query.limit,
     offset: r.query.offset,
-    order: [['block_number', 'DESC']]
+    order: [['block_number', 'DESC']],
   });
 
   return output({ count, txs: rows });
