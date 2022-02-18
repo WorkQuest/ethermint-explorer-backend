@@ -1,5 +1,6 @@
 import { getTokenTransfers } from '../../api/v1/token'
 import { paginationSchema } from '../../schemes';
+import * as Joi from 'joi';
 
 export default [{
   method: 'GET',
@@ -10,6 +11,9 @@ export default [{
     tags: ['api', 'token'],
     description: 'Get all transfer by token',
     validate: {
+      params: Joi.object({
+        address: Joi.string().required()
+      }).label('GetAccountByAddressParams'),
       query: paginationSchema
     }
   }
