@@ -157,8 +157,6 @@ export class transactions extends Model {
   @BelongsTo(() => addresses, 'created_contract_address_hash') contract: addresses;
   @BelongsTo(() => blocks) block: blocks;
 
-  @HasOne(() => tokens) token: tokens;
-
   @HasMany(() => logs) logs: logs[];
   @HasMany(() => token_transfers) token_transfers: token_transfers[];
 }

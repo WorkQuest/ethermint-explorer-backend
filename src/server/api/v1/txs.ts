@@ -32,9 +32,6 @@ export async function getTxByHash(r) {
       model: addresses,
       as: 'to_address'
     }, {
-      model: tokens,
-      as: 'token'
-    }, {
       model: addresses,
       as: 'contract'
     }, {
