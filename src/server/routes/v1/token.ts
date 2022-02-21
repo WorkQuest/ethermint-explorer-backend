@@ -1,4 +1,4 @@
-import { getAccountTokenTransfers } from '../../api/v1/token';
+import { getAccountTokenTransfers, getTokenInfo } from '../../api/v1/token';
 import { getTokenTransfers } from '../../api/v1/token'
 import { paginationSchema } from '../../schemes';
 import * as Joi from 'joi';
@@ -20,7 +20,7 @@ export default [{
   }
 }, {
   method: 'GET',
-  path: '/token/{tokenAddress}/account/{accountAddress}/transfers',
+  path: '/v1/token/{tokenAddress}/account/{accountAddress}/transfers',
   handler: getAccountTokenTransfers,
   options: {
     id: 'v1.tx.getTokenTransfersByAccount',
@@ -32,6 +32,20 @@ export default [{
         tokenAddress: Joi.string().required()
       }).label('GetAccountTokenTransfersParams'),
       query: paginationSchema
+    }
+  }
+}, {
+  method: 'GET',
+  path: '/v1/token/{address}',
+  handler: getTokenInfo,
+  options: {
+    id: 'v1.tx.getTokenInfo',
+    tags: ['api', 'token'],
+    description: 'Get token info',
+    validate: {
+      params: Joi.object({
+        address: Joi.string().required()
+      }).label('GetTokenInfoParams')
     }
   }
 }];

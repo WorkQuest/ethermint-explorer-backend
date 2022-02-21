@@ -1,7 +1,10 @@
 import { token_transfers } from '../../database/models/token_transfers'
-import { output } from '../../utils';
+import { error, output } from '../../utils';
 import { convertHashToBuffer } from '../../utils/address';
 import { Op } from 'sequelize';
+import token from '../../routes/v1/token';
+import { tokens } from '../../database/models/tokens';
+import { Errors } from '../../utils/errors';
 
 export async function getTokenTransfers(r) {
   const address = convertHashToBuffer(r.params.address);
@@ -15,7 +18,6 @@ export async function getTokenTransfers(r) {
 
   return output({ count, txs: rows });
 }
-
 
 export async function getAccountTokenTransfers(r) {
   const accountAddress = convertHashToBuffer(r.params.accountAddress);
@@ -37,4 +39,15 @@ export async function getAccountTokenTransfers(r) {
   });
 
   return output({ count, txs: rows })
+}
+
+export async function getTokenInfo(r) {
+  const address = convertHashToBuffer(r.params.address);
+  const token = await tokens.findByPk(address);
+
+  if (!token) {
+    return error(Errors.NotFound, 'Token not found', { field: ['address'] });
+  }
+
+  return output(token);
 }
