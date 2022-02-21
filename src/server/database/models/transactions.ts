@@ -3,6 +3,7 @@ import { blocks } from './blocks';
 import { addresses } from './addresses';
 import { parseBufferedAddress, parseBufferedHash } from '../../utils/address';
 import { token_transfers } from './token_transfers';
+import { logs } from './logs';
 
 @Table
 export class transactions extends Model {
@@ -154,5 +155,7 @@ export class transactions extends Model {
   @BelongsTo(() => addresses, 'to_address_hash') to_address: addresses;
   @BelongsTo(() => addresses, 'created_contract_address_hash') contract: addresses;
   @BelongsTo(() => blocks) block: blocks;
+
+  @HasMany(() => logs) logs: logs[];
   @HasMany(() => token_transfers) token_transfers: token_transfers[];
 }
