@@ -3,6 +3,7 @@ import { Errors } from '../../utils/errors';
 import { transactions } from '../../database/models/transactions';
 import { addresses } from '../../database/models/addresses';
 import { blocks } from '../../database/models/blocks';
+import { tokens } from '../../database/models/tokens';
 import { logs } from '../../database/models/logs';
 import { token_transfers } from '../../database/models/token_transfers';
 import { convertHashToBuffer } from '../../utils/address';
@@ -30,6 +31,9 @@ export async function getTxByHash(r) {
     }, {
       model: addresses,
       as: 'to_address'
+    }, {
+      model: tokens,
+      as: 'token'
     }, {
       model: addresses,
       as: 'contract'

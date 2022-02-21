@@ -1,9 +1,10 @@
-import { BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, ForeignKey, HasMany, HasOne, Model, Table } from 'sequelize-typescript';
 import { blocks } from './blocks';
 import { addresses } from './addresses';
 import { parseBufferedAddress, parseBufferedHash } from '../../utils/address';
 import { token_transfers } from './token_transfers';
 import { logs } from './logs';
+import { tokens } from './tokens';
 
 @Table
 export class transactions extends Model {
@@ -155,6 +156,8 @@ export class transactions extends Model {
   @BelongsTo(() => addresses, 'to_address_hash') to_address: addresses;
   @BelongsTo(() => addresses, 'created_contract_address_hash') contract: addresses;
   @BelongsTo(() => blocks) block: blocks;
+
+  @HasOne(() => tokens) token: tokens;
 
   @HasMany(() => logs) logs: logs[];
   @HasMany(() => token_transfers) token_transfers: token_transfers[];
