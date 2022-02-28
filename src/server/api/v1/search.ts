@@ -13,7 +13,7 @@ async function getBlock(query) {
 
   let where: object = { hash };
 
-  if (!query.startOf(hash) && !isNaN(Number(query))) {
+  if (!query.startsWith(hash) && !isNaN(Number(query))) {
     where = { number: query }
   }
 
