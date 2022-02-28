@@ -1,5 +1,7 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, HasOne, Model, Table } from 'sequelize-typescript';
 import { parseBufferedAddress, parseBufferedHash } from '../../utils/address';
+import { tokens } from './tokens';
+import { smart_contracts } from './smart_contracts';
 
 @Table
 export class addresses extends Model {
@@ -45,4 +47,7 @@ export class addresses extends Model {
 
   @Column({ type: DataType.BOOLEAN })
   verified: boolean;
+
+  @HasOne(() => tokens) addressToken: tokens;
+  @HasOne(() => smart_contracts) addressContract: smart_contracts;
 }

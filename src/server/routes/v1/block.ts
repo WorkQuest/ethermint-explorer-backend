@@ -1,7 +1,7 @@
 import { getBlockById, getBlocks } from '../../api/v1/block';
 import { paginationSchema } from '../../schemes';
 import * as Joi from 'joi'
-import { blockIdSchema } from '../../schemes/block';
+
 export default [{
   method: 'GET',
   path: '/v1/blocks',
