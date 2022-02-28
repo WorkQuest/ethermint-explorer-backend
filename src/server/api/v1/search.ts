@@ -11,32 +11,33 @@ import { smart_contracts } from '../../database/models/smart_contracts';
 async function getBlock(query) {
   const hash = convertHashToBuffer(query);
 
-  const where = !isNaN(Number(query)) ? { hash } : { number: query };
+  let where: object = { hash };
 
-  const result = await blocks.findAndCountAll({ where });
+  if (!query.startOf(hash) && !isNaN(Number(query))) {
+    where = { number: query }
+  }
 
-  const type = result.count === 0 ? SearchType.None : SearchType.Block;
+  const searchResult = await blocks.findOne({ where });
 
-  return { ...result, type };
+  const searchType = searchResult ? SearchType.Block : SearchType.None;
+
+  return { searchResult, searchType };
 }
 
 async function getTransaction(query) {
   const hash = convertHashToBuffer(query);
 
-  const result = await transactions.findAndCountAll({
-    where: { hash }
-  });
+  const searchResult = await transactions.findByPk(hash);
 
-  const type = result.count === 0 ? SearchType.None : SearchType.Transaction;
+  const searchType = searchResult ? SearchType.Transaction : SearchType.None;
 
-  return { ...result, type };
+  return { searchResult, searchType };
 }
 
 async function getAddress(query) {
   const hash = convertHashToBuffer(query);
 
-  const result = await addresses.findAndCountAll({
-    where: { hash },
+  const searchResult = await addresses.findByPk(hash, {
     include: [{
       model: tokens,
       as: 'addressToken'
@@ -46,25 +47,23 @@ async function getAddress(query) {
     }]
   });
 
-  if (result.count === 0) {
-    return { ...result, type: SearchType.None };
+  if (!searchResult) {
+    return { searchResult, searchType: SearchType.None };
   }
 
-  const [address] = result.rows;
-
-  if (address.addressToken) {
-    return { ...result, type: SearchType.Token };
+  if (searchResult.addressToken) {
+    return { searchResult, searchType: SearchType.Token };
   }
 
-  if (address.addressContract) {
-    return { ...result, type: SearchType.Contract };
+  if (searchResult.addressContract) {
+    return { searchResult, searchType: SearchType.Contract };
   }
 
-  return { ...result, type: SearchType.Address };
+  return { searchResult, searchType: SearchType.Address };
 }
 
 async function getTokens(query) {
-  const result = await addresses.findAndCountAll({
+  const searchResult = await addresses.findAndCountAll({
     include: [{
       model: tokens,
       as: 'addressToken',
@@ -81,9 +80,7 @@ async function getTokens(query) {
     }]
   });
 
-  const type = result.count === 0 ? SearchType.None : SearchType.Token;
-
-  return { ...result, type };
+  return { searchResult, searchType: SearchType.Tokens };
 }
 
 export async function search(r) {
@@ -100,10 +97,10 @@ export async function search(r) {
     const blockResult = await getBlock(q);
     const txResult = await getTransaction(q);
 
-    return output(blockResult.type === SearchType.None ? txResult : blockResult);
+    return output(blockResult.searchType === SearchType.None ? txResult : blockResult);
   }
 
-  if (type === SearchType.Token) {
+  if (type === SearchType.Tokens) {
     const result = await getTokens(q);
 
     return output(result);
@@ -115,5 +112,5 @@ export async function search(r) {
     return output(result);
   }
 
-  return output({ rows: [], count: 0, type });
+  return output({ searchResult: null, searchType: type });
 }

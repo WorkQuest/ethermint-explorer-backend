@@ -4,6 +4,7 @@ export const enum SearchType {
   BlockOrTx,
   Contract,
   Address,
+  Tokens,
   Token,
   None
 }
@@ -14,7 +15,7 @@ export function getSearchType(hash: string): SearchType {
   }
 
   if (!hash.startsWith('0x')) {
-    return SearchType.Token;
+    return SearchType.Tokens;
   }
 
   if (hash.length === 42) {
