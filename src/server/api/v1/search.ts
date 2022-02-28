@@ -139,6 +139,8 @@ export async function search(r) {
 
       return output(result);
     }
+
+    return { searchResult: null, searchType: type };
   }
 
   return output(await searchByType(type, q));
