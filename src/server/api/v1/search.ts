@@ -119,7 +119,7 @@ export async function search(r) {
   const { q } = r.query;
   const type = getSearchType(q);
 
-  if (r.query.type) {
+  if (r.query.type !== undefined) {
     const { type } = r.query;
 
     if (type === SearchFilter.Addresses) {
