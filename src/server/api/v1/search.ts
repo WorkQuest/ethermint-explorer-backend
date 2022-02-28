@@ -11,7 +11,7 @@ import { smart_contracts } from '../../database/models/smart_contracts';
 async function getBlock(query) {
   const hash = convertHashToBuffer(query);
 
-  const where = isNaN(Number(query)) ? { hash } : { number: query };
+  const where = !isNaN(Number(query)) ? { hash } : { number: query };
 
   const result = await blocks.findAndCountAll({ where });
 
