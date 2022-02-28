@@ -1,7 +1,7 @@
 import { error, output } from '../../utils';
 import { addresses } from '../../database/models/addresses';
 import { transactions } from '../../database/models/transactions';
-import { Op } from 'sequelize';
+import { literal, Op, where } from 'sequelize';
 import { convertHashToBuffer } from '../../utils/address';
 import { token_transfers } from '../../database/models/token_transfers';
 
@@ -31,24 +31,26 @@ export async function getAccountByAddress(r) {
 export async function getAccountTxs(r) {
   const address = convertHashToBuffer(r.params.address);
   const include = [];
+  const search = {
+    [Op.or]: {
+      from_address_hash: address,
+      to_address_hash: address
+    }
+  }
 
   if (r.query.withContracts) {
     include.push({
       model: token_transfers,
       as: 'token_transfers',
-      right: true,
-      required: false,
+      right: false,
       attributes: []
     });
+
+    search['Op.and'] = [where(literal('"token_transfers"."transaction_hash"'), Op.is, null)];
   }
 
   const { count, rows } = await transactions.findAndCountAll({
-    where: {
-      [Op.or]: {
-        from_address_hash: address,
-        to_address_hash: address
-      }
-    },
+    where: search,
     include,
     order: [['block_number', 'DESC']],
     limit: r.query.limit,
