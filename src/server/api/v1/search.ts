@@ -37,13 +37,16 @@ async function getTransaction(query) {
 async function getAddress(query) {
   const hash = convertHashToBuffer(query);
 
-  const searchResult = await addresses.findByPk(hash, {
+  const searchResult = await addresses.findOne({
+    where: { hash },
     include: [{
       model: tokens,
-      as: 'addressToken'
+      as: 'addressToken',
+      required: false
     }, {
       model: smart_contracts,
-      as: 'addressContract'
+      as: 'addressContract',
+      required: false
     }]
   });
 
