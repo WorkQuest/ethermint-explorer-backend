@@ -30,28 +30,14 @@ export async function getAccountByAddress(r) {
 //
 export async function getAccountTxs(r) {
   const address = convertHashToBuffer(r.params.address);
-  const include = [];
-  const search = {
-    [Op.or]: {
-      from_address_hash: address,
-      to_address_hash: address
-    }
-  }
-
-  if (r.query.withContracts) {
-    include.push({
-      model: token_transfers,
-      as: 'token_transfers',
-      right: false,
-      attributes: []
-    });
-
-    search['Op.and'] = [where(literal('"token_transfers"."transaction_hash"'), Op.is, null)];
-  }
 
   const { count, rows } = await transactions.findAndCountAll({
-    where: search,
-    include,
+    where: {
+      [Op.or]: {
+        from_address_hash: address,
+        to_address_hash: address
+      }
+    },
     order: [['block_number', 'DESC']],
     limit: r.query.limit,
     offset: r.query.offset

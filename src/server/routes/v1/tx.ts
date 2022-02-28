@@ -40,7 +40,6 @@ export default [{
     validate: {
       params: Joi.object({
         address: Joi.string().required(),
-        withContracts: Joi.boolean().default(true),
       }).label('GetAllAccountTxsParams')
     }
   }
