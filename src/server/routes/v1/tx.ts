@@ -39,7 +39,8 @@ export default [{
     description: 'Get txs by account',
     validate: {
       params: Joi.object({
-        address: Joi.string().required()
+        address: Joi.string().required(),
+        withContracts: Joi.boolean().default(true),
       }).label('GetAllAccountTxsParams')
     }
   }

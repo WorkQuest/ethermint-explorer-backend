@@ -3,6 +3,7 @@ import { addresses } from '../../database/models/addresses';
 import { transactions } from '../../database/models/transactions';
 import { Op } from 'sequelize';
 import { convertHashToBuffer } from '../../utils/address';
+import { token_transfers } from '../../database/models/token_transfers';
 
 export async function getAccountByAddress(r) {
   const address = convertHashToBuffer(r.params.address);
@@ -29,6 +30,17 @@ export async function getAccountByAddress(r) {
 //
 export async function getAccountTxs(r) {
   const address = convertHashToBuffer(r.params.address);
+  const include = [];
+
+  if (r.query.withContracts) {
+    include.push({
+      model: token_transfers,
+      as: 'token_transfers',
+      right: true,
+      required: false,
+      attributes: []
+    });
+  }
 
   const { count, rows } = await transactions.findAndCountAll({
     where: {
@@ -37,6 +49,7 @@ export async function getAccountTxs(r) {
         to_address_hash: address
       }
     },
+    include,
     order: [['block_number', 'DESC']],
     limit: r.query.limit,
     offset: r.query.offset
