@@ -9,20 +9,26 @@ export const enum SearchType {
   None
 }
 
-export function getSearchType(hash: string): SearchType {
-  if (!hash.startsWith('0x') && !isNaN(Number(hash))) {
+export const enum SearchFilter {
+  Addresses = 0,
+  Tokens,
+  TokenName
+}
+
+export function getSearchType(query: string): SearchType {
+  if (!query.startsWith('0x') && !isNaN(Number(query))) {
     return SearchType.Block;
   }
 
-  if (!hash.startsWith('0x')) {
+  if (!query.startsWith('0x')) {
     return SearchType.Tokens;
   }
 
-  if (hash.length === 42) {
+  if (query.length === 42) {
     return SearchType.Address;
   }
 
-  if (hash.length === 66) {
+  if (query.length === 66) {
     return SearchType.BlockOrTx;
   }
 

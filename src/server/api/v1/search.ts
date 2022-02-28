@@ -1,12 +1,12 @@
 import { transactions } from '../../database/models/transactions';
-import { getSearchType, SearchType } from '../../utils/search';
+import { getSearchType, SearchFilter, SearchType } from '../../utils/search';
 import { convertHashToBuffer } from '../../utils/address';
 import { blocks } from '../../database/models/blocks';
-import { output } from '../../utils';
 import { Op } from 'sequelize';
 import { addresses } from '../../database/models/addresses';
 import { tokens } from '../../database/models/tokens';
 import { smart_contracts } from '../../database/models/smart_contracts';
+import { output } from '../../utils';
 
 async function getBlock(query) {
   const hash = convertHashToBuffer(query);
@@ -34,7 +34,7 @@ async function getTransaction(query) {
   return { searchResult, searchType };
 }
 
-async function getAddress(query) {
+async function getAddress(query, extraParams = false) {
   const hash = convertHashToBuffer(query);
 
   const searchResult = await addresses.findOne({
@@ -42,7 +42,7 @@ async function getAddress(query) {
     include: [{
       model: tokens,
       as: 'addressToken',
-      required: false
+      required: extraParams
     }, {
       model: smart_contracts,
       as: 'addressContract',
@@ -86,34 +86,60 @@ async function getTokens(query) {
   return { searchResult, searchType: SearchType.Tokens };
 }
 
-export async function search(r) {
-  const { q } = r.query;
-  const type = getSearchType(q);
-
+async function searchByType(type: SearchType, q: string, extraParams?: any) {
   if (type === SearchType.Block) {
     const result = await getBlock(q);
 
-    return output(result);
+    return result;
   }
 
   if (type === SearchType.BlockOrTx) {
     const blockResult = await getBlock(q);
     const txResult = await getTransaction(q);
 
-    return output(blockResult.searchType === SearchType.None ? txResult : blockResult);
+    return blockResult.searchType === SearchType.None ? txResult : blockResult;
   }
 
   if (type === SearchType.Tokens) {
     const result = await getTokens(q);
 
-    return output(result);
+    return result;
   }
 
   if (type === SearchType.Address) {
-    const result = await getAddress(q);
+    const result = await getAddress(q, extraParams);
 
-    return output(result);
+    return result;
   }
 
-  return output({ searchResult: null, searchType: type });
+  return { searchResult: null, searchType: type };
+}
+
+export async function search(r) {
+  const { q } = r.query;
+  const type = getSearchType(q);
+
+  if (r.query.type) {
+    const { type } = r.query;
+
+    if (type === SearchFilter.Addresses) {
+      const result = await searchByType(SearchType.Address, q);
+
+      return output(result);
+    }
+
+    if (type === SearchFilter.Tokens) {
+      const result = await searchByType(SearchType.Address, q, true);
+
+      return output(result);
+    }
+
+    if (type === SearchFilter.TokenName) {
+      const result = await searchByType(SearchType.Tokens, q);
+
+      return output(result);
+    }
+  }
+
+  return output(await searchByType(type, q));
 }
