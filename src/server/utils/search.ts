@@ -10,7 +10,7 @@ export const enum SearchType {
 }
 
 export function getSearchType(hash: string): SearchType {
-  if (hash.startsWith('0x') && !isNaN(Number(hash))) {
+  if (!hash.startsWith('0x') && !isNaN(Number(hash))) {
     return SearchType.Block;
   }
 
