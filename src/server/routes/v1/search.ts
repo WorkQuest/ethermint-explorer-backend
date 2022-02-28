@@ -11,7 +11,7 @@ export default [{
     description: 'Search in blocks, tx, addresses, tokens',
     validate: {
       query: Joi.object({
-        q: Joi.string().max(255)
+        q: Joi.string().max(255).required()
       }).label('SearchQuery')
     }
   }
