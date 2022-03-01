@@ -1,5 +1,5 @@
 import { convertHashToBuffer } from '../../utils/address';
-import { Logs } from '../../database/models/Logs';
+import { Logs } from '../../database';
 import { output } from '../../utils';
 import { Op } from 'sequelize';
 

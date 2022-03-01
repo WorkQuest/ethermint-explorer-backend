@@ -78,3 +78,36 @@ export async function initDatabase(){
   await sequelize.sync();
   return sequelize;
 }
+
+export * from './models/SmartContractAdditionalSource';
+export * from './models/AddressCurrentTokenBalance';
+export * from './models/BlockSecondDegreeRelation';
+export * from './models/AddressCoinBalanceDaily';
+export * from './models/DecompiledSmartContract';
+export * from './models/PendingBlockOperation';
+export * from './models/StakingPoolDelegator';
+export * from './models/AddressTokenBalance';
+export * from './models/InternalTransaction';
+export * from './models/AddressCoinBalance';
+export * from './models/LastFetchedCounter';
+export * from './models/TransactionStats';
+export * from './models/TransactionFork';
+export * from './models/SchemaMigration';
+export * from './models/ContractMethod';
+export * from './models/EmissionReward';
+export * from './models/TokenInstance';
+export * from './models/SmartContract';
+export * from './models/TokenTransfer';
+export * from './models/Administrator';
+export * from './models/MarketHistory';
+export * from './models/BridgedToken';
+export * from './models/AddressName';
+export * from './models/BlockReward';
+export * from './models/StakingPool';
+export * from './models/UserContact';
+export * from './models/Transaction';
+export * from './models/Address';
+export * from './models/Token';
+export * from './models/Block';
+export * from './models/User';
+export * from './models/Logs';

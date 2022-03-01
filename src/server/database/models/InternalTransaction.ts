@@ -1,4 +1,4 @@
-import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { parseBufferedAddress, parseBufferedHash } from '../../utils/address';
 import { Address } from './Address';
 import { Transaction } from './Transaction';
@@ -143,4 +143,6 @@ export class InternalTransaction extends Model {
 
   @Column({ type: DataType.INTEGER, allowNull: false, primaryKey: true })
   block_index: number;
+
+  @BelongsTo(() => Block) block: Block;
 }

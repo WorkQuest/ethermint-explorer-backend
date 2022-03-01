@@ -1,6 +1,5 @@
-import { TokenTransfer } from '../../database/models/TokenTransfer'
 import { convertHashToBuffer } from '../../utils/address';
-import { Token } from '../../database/models/Token';
+import { TokenTransfer, Token } from '../../database';
 import { error, output } from '../../utils';
 import { Errors } from '../../utils/errors';
 import { Op } from 'sequelize';

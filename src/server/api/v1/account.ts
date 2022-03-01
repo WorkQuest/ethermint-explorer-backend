@@ -1,15 +1,17 @@
-import { Op } from 'sequelize';
-import { Token } from '../../database/models/Token';
-import { Address } from '../../database/models/Address';
-import { Logs } from '../../database/models/Logs';
-import { Block } from '../../database/models/Block';
-import { Transaction } from '../../database/models/Transaction';
-import { TokenTransfer } from '../../database/models/TokenTransfer';
-import { InternalTransaction } from '../../database/models/InternalTransaction'
-import { SmartContract } from '../../database/models/SmartContract';
-import { AddressCoinBalance } from '../../database/models/AddressCoinBalance';
-import { output } from '../../utils';
 import { convertHashToBuffer } from '../../utils/address';
+import { output } from '../../utils';
+import { Op } from 'sequelize';
+import {
+  InternalTransaction,
+  AddressCoinBalance,
+  TokenTransfer,
+  SmartContract,
+  Transaction,
+  Address,
+  Block,
+  Token,
+  Logs,
+} from '../../database';
 
 export async function getAccountByAddress(r) {
   const { commonLimit } = r.query;
@@ -22,13 +24,17 @@ export async function getAccountByAddress(r) {
     }, {
       model: SmartContract,
       as: 'addressContract',
-    }, {
-      model: AddressCoinBalance,
-      as: 'addressCoinBalance',
-      limit: 1,
-      order: [['block_number', 'DESC']],
     }]
   });
+
+  AddressCoinBalance.removeAttribute('id');
+  const addressCoinBalance = await AddressCoinBalance.findOne({
+    where: { address_hash: address },
+    order: [['block_number', 'DESC']],
+    limit: 1
+  });
+
+  account.setDataValue('addressCoinBalance', addressCoinBalance);
 
   const addressLogsList = await Logs.findAndCountAll({
     where: {
@@ -126,6 +132,7 @@ export async function getAccountByAddress(r) {
 //   return output({ count, balances: rows });
 // }
 //
+
 export async function getAccountTxs(r) {
   const address = convertHashToBuffer(r.params.address);
 

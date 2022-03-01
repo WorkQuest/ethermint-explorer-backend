@@ -1,9 +1,5 @@
-import { TokenTransfer } from '../../database/models/TokenTransfer';
-import { Transaction } from '../../database/models/Transaction';
+import { TokenTransfer, Transaction, Address, Block, Logs } from '../../database';
 import { convertHashToBuffer } from '../../utils/address';
-import { Address } from '../../database/models/Address';
-import { Block } from '../../database/models/Block';
-import { Logs } from '../../database/models/logs';
 import { error, output } from '../../utils';
 import { Errors } from '../../utils/errors';
 

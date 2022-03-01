@@ -1,10 +1,6 @@
+import { SmartContract, Transaction, Address, Block, Token } from '../../database';
 import { getSearchType, SearchFilter, SearchType } from '../../utils/search';
-import { SmartContract } from '../../database/models/SmartContract';
-import { Transaction } from '../../database/models/Transaction';
 import { convertHashToBuffer } from '../../utils/address';
-import { Address } from '../../database/models/Address';
-import { Block } from '../../database/models/Block';
-import { Token } from '../../database/models/Token';
 import { output } from '../../utils';
 import { Op } from 'sequelize';
 

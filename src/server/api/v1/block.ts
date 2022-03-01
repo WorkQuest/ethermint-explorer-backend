@@ -1,5 +1,4 @@
-import { Transaction } from '../../database/models/Transaction';
-import { Block } from '../../database/models/Block';
+import { Transaction, Block } from '../../database';
 import { error, output } from '../../utils';
 import { Errors } from '../../utils/errors';
 

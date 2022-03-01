@@ -1,6 +1,6 @@
-import { getAccountTxs } from '../../api/v1/account';
+import { paginationSchema } from '../../database/schemes';
 import { getAllTxs, getTxByHash } from '../../api/v1/txs';
-import { addressSchema, hashSchema, paginationSchema } from '../../schemes';
+import { getAccountTxs } from '../../api/v1/account';
 import * as Joi from 'joi';
 
 export default [{

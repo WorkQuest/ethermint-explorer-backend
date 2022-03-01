@@ -1,5 +1,5 @@
 import { getBlockById, getBlocks } from '../../api/v1/block';
-import { paginationSchema } from '../../schemes';
+import { paginationSchema } from '../../database/schemes';
 import * as Joi from 'joi'
 
 export default [{

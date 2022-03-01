@@ -1,6 +1,5 @@
 import * as Joi from 'joi';
 import * as handlers from '../../api/v1/account';
-import { addressSchema, paginationSchema } from '../../schemes';
 
 export default [{
   method: 'GET',

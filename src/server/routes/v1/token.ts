@@ -1,6 +1,6 @@
 import { getAccountTokenTransfers, getTokenInfo } from '../../api/v1/token';
 import { getTokenTransfers } from '../../api/v1/token'
-import { paginationSchema } from '../../schemes';
+import { paginationSchema } from '../../database/schemes';
 import * as Joi from 'joi';
 
 export default [{
