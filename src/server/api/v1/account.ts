@@ -1,13 +1,12 @@
-import { error, output } from '../../utils';
-import { addresses } from '../../database/models/addresses';
-import { transactions } from '../../database/models/transactions';
-import { literal, Op, where } from 'sequelize';
+import { Transaction } from '../../database/models/Transaction';
 import { convertHashToBuffer } from '../../utils/address';
-import { token_transfers } from '../../database/models/token_transfers';
+import { Address } from '../../database/models/Address';
+import { output } from '../../utils';
+import { Op } from 'sequelize';
 
 export async function getAccountByAddress(r) {
   const address = convertHashToBuffer(r.params.address);
-  const account = await addresses.findByPk(address);
+  const account = await Address.findByPk(address);
 
   return output(account);
 }
@@ -31,7 +30,7 @@ export async function getAccountByAddress(r) {
 export async function getAccountTxs(r) {
   const address = convertHashToBuffer(r.params.address);
 
-  const { count, rows } = await transactions.findAndCountAll({
+  const { count, rows } = await Transaction.findAndCountAll({
     where: {
       [Op.or]: {
         from_address_hash: address,

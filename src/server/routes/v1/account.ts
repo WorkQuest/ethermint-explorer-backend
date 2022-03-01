@@ -1,6 +1,5 @@
 import { getAccountByAddress } from '../../api/v1/account';
 import * as Joi from 'joi';
-import { addressSchema, paginationSchema } from '../../schemes';
 
 export default [{
   method: 'GET',

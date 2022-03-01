@@ -1,13 +1,12 @@
+import { Transaction } from '../../database/models/Transaction';
+import { Block } from '../../database/models/Block';
 import { error, output } from '../../utils';
 import { Errors } from '../../utils/errors';
-import { blocks } from '../../database/models/blocks';
-import { transactions } from '../../database/models/transactions';
-import { col, fn } from 'sequelize';
 
 export async function getBlocks(r) {
-  const { count, rows } = await blocks.findAndCountAll({
+  const { count, rows } = await Block.findAndCountAll({
     include: [{
-      model: transactions,
+      model: Transaction,
       as: 'transactions',
       required: false
     }],
@@ -20,10 +19,10 @@ export async function getBlocks(r) {
 }
 
 export async function getBlockById(r) {
-  const block = await blocks.findOne({
+  const block = await Block.findOne({
     where: { number: r.params.blockNumber },
     include: [{
-      model: transactions,
+      model: Transaction,
       as: 'transactions'
     }],
   });

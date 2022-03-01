@@ -1,12 +1,12 @@
-import { transactions } from '../../database/models/transactions';
 import { getSearchType, SearchFilter, SearchType } from '../../utils/search';
+import { SmartContract } from '../../database/models/SmartContract';
+import { Transaction } from '../../database/models/Transaction';
 import { convertHashToBuffer } from '../../utils/address';
-import { blocks } from '../../database/models/blocks';
-import { Op } from 'sequelize';
-import { addresses } from '../../database/models/addresses';
-import { tokens } from '../../database/models/tokens';
-import { smart_contracts } from '../../database/models/smart_contracts';
+import { Address } from '../../database/models/Address';
+import { Block } from '../../database/models/Block';
+import { Token } from '../../database/models/Token';
 import { output } from '../../utils';
+import { Op } from 'sequelize';
 
 async function getBlock(query) {
   const hash = convertHashToBuffer(query);
@@ -17,7 +17,7 @@ async function getBlock(query) {
     where = { number: query }
   }
 
-  const searchResult = await blocks.findOne({ where });
+  const searchResult = await Block.findOne({ where });
 
   const searchType = searchResult ? SearchType.Block : SearchType.None;
 
@@ -27,7 +27,7 @@ async function getBlock(query) {
 async function getTransaction(query) {
   const hash = convertHashToBuffer(query);
 
-  const searchResult = await transactions.findByPk(hash);
+  const searchResult = await Transaction.findByPk(hash);
 
   const searchType = searchResult ? SearchType.Transaction : SearchType.None;
 
@@ -37,14 +37,14 @@ async function getTransaction(query) {
 async function getAddress(query, extraParams = false) {
   const hash = convertHashToBuffer(query);
 
-  const searchResult = await addresses.findOne({
+  const searchResult = await Address.findOne({
     where: { hash },
     include: [{
-      model: tokens,
+      model: Token,
       as: 'addressToken',
       required: extraParams
     }, {
-      model: smart_contracts,
+      model: SmartContract,
       as: 'addressContract',
       required: false
     }]
@@ -66,9 +66,9 @@ async function getAddress(query, extraParams = false) {
 }
 
 async function getTokens(query) {
-  const searchResult = await addresses.findAndCountAll({
+  const searchResult = await Address.findAndCountAll({
     include: [{
-      model: tokens,
+      model: Token,
       as: 'addressToken',
       required: true,
       where: {
@@ -78,7 +78,7 @@ async function getTokens(query) {
         }
       },
     }, {
-      model: smart_contracts,
+      model: SmartContract,
       as: 'addressContract'
     }]
   });

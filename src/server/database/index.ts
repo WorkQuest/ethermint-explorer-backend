@@ -1,74 +1,74 @@
-import { smart_contracts_additional_sources } from './models/smart_contracts_additional_sources';
-import { address_current_token_balances } from './models/address_current_token_balances';
-import { block_second_degree_relations } from './models/block_second_degree_relations';
-import { address_coin_balances_daily } from './models/address_coin_balances_daily';
-import { decompiled_smart_contracts } from './models/decompiled_smart_contracts';
-import { pending_block_operations } from './models/pending_block_operations';
-import { staking_pools_delegators } from './models/staking_pools_delegators';
-import { address_token_balances } from './models/address_token_balances';
-import { address_coin_balances } from './models/address_coin_balances';
-import { internal_transactions } from './models/internal_transactions';
-import { last_fetched_counters } from './models/last_fetched_counters';
-import { schema_migrations } from './models/schema_migrations';
-import { transaction_forks } from './models/transaction_forks';
-import { transaction_stats } from './models/transaction_stats';
-import { contract_methods } from './models/contract_methods';
-import { emission_rewards } from './models/emission_rewards';
-import { smart_contracts } from './models/smart_contracts';
-import { token_instances } from './models/token_instances';
-import { token_transfers } from './models/token_transfers';
-import { administrators } from './models/administrators';
-import { bridged_tokens } from './models/bridged_tokens';
-import { market_history } from './models/market_history';
-import { block_rewards } from './models/block_rewards';
-import { staking_pools } from './models/staking_pools';
-import { address_names } from './models/address_names';
-import { user_contacts } from './models/user_contacts';
-import { transactions } from './models/transactions';
-import { addresses } from './models/addresses';
+import { SmartContractAdditionalSource } from './models/SmartContractAdditionalSource';
+import { AddressCurrentTokenBalance } from './models/AddressCurrentTokenBalance';
+import { BlockSecondDegreeRelation } from './models/BlockSecondDegreeRelation';
+import { AddressCoinBalanceDaily } from './models/AddressCoinBalanceDaily';
+import { DecompiledSmartContract } from './models/DecompiledSmartContract';
+import { PendingBlockOperation } from './models/PendingBlockOperation';
+import { StakingPoolDelegator } from './models/StakingPoolDelegator';
+import { AddressTokenBalance } from './models/AddressTokenBalance';
+import { InternalTransaction } from './models/InternalTransaction';
+import { AddressCoinBalance } from './models/AddressCoinBalance';
+import { LastFetchedCounter } from './models/LastFetchedCounter';
+import { TransactionStats } from './models/TransactionStats';
+import { TransactionFork } from './models/TransactionFork';
+import { SchemaMigration } from './models/SchemaMigration';
+import { ContractMethod } from './models/ContractMethod';
+import { EmissionReward } from './models/EmissionReward';
+import { TokenInstance } from './models/TokenInstance';
+import { SmartContract } from './models/SmartContract';
+import { TokenTransfer } from './models/TokenTransfer';
+import { Administrator } from './models/Administrator';
+import { MarketHistory } from './models/MarketHistory';
+import { BridgedToken } from './models/BridgedToken';
+import { AddressName } from './models/AddressName';
+import { BlockReward } from './models/BlockReward';
+import { StakingPool } from './models/StakingPool';
+import { UserContact } from './models/UserContact';
+import { Transaction } from './models/Transaction';
 import { Sequelize } from 'sequelize-typescript';
-import { blocks } from './models/blocks';
-import { tokens } from './models/tokens';
-import { users } from './models/users';
+import { Address } from './models/Address';
+import { Token } from './models/Token';
+import { Block } from './models/Block';
 import config from '../config/config';
-import { logs } from './models/logs';
+import { User } from './models/User';
+import { Logs } from './models/Logs';
 
 export async function initDatabase(){
   const sequelize = new Sequelize(config.dbLink, {
     dialect: 'postgres',
     models: [
-      smart_contracts_additional_sources,
-      address_current_token_balances,
-      block_second_degree_relations,
-      address_coin_balances_daily,
-      decompiled_smart_contracts,
-      staking_pools_delegators,
-      pending_block_operations,
-      address_token_balances,
-      internal_transactions,
-      address_coin_balances,
-      last_fetched_counters,
-      transaction_stats,
-      transaction_forks,
-      schema_migrations,
-      contract_methods,
-      emission_rewards,
-      token_instances,
-      smart_contracts,
-      token_transfers,
-      bridged_tokens,
-      administrators,
-      market_history,
-      address_names,
-      block_rewards,
-      staking_pools,
-      user_contacts,
-      transactions,
-      addresses,
-      tokens,
-      blocks,
-      users,
-      logs,
+      SmartContractAdditionalSource,
+      AddressCurrentTokenBalance,
+      BlockSecondDegreeRelation,
+      AddressCoinBalanceDaily,
+      DecompiledSmartContract,
+      PendingBlockOperation,
+      StakingPoolDelegator,
+      AddressTokenBalance,
+      InternalTransaction,
+      AddressCoinBalance,
+      LastFetchedCounter,
+      TransactionStats,
+      TransactionFork,
+      SchemaMigration,
+      ContractMethod,
+      EmissionReward,
+      TokenInstance,
+      SmartContract,
+      TokenTransfer,
+      Administrator,
+      MarketHistory,
+      BridgedToken,
+      AddressName,
+      BlockReward,
+      StakingPool,
+      UserContact,
+      Transaction,
+      Address,
+      Token,
+      Block,
+      User,
+      Logs,
     ],
     define: {
       createdAt: 'inserted_at',

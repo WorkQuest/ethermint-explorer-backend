@@ -1,15 +1,14 @@
-import { token_transfers } from '../../database/models/token_transfers'
-import { error, output } from '../../utils';
+import { TokenTransfer } from '../../database/models/TokenTransfer'
 import { convertHashToBuffer } from '../../utils/address';
-import { Op } from 'sequelize';
-import token from '../../routes/v1/token';
-import { tokens } from '../../database/models/tokens';
+import { Token } from '../../database/models/Token';
+import { error, output } from '../../utils';
 import { Errors } from '../../utils/errors';
+import { Op } from 'sequelize';
 
 export async function getTokenTransfers(r) {
   const address = convertHashToBuffer(r.params.address);
 
-  const { count, rows } = await token_transfers.findAndCountAll({
+  const { count, rows } = await TokenTransfer.findAndCountAll({
     where: { token_contract_address_hash: address },
     limit: r.query.limit,
     offset: r.query.offset,
@@ -23,7 +22,7 @@ export async function getAccountTokenTransfers(r) {
   const accountAddress = convertHashToBuffer(r.params.accountAddress);
   const tokenAddress = convertHashToBuffer(r.params.tokenAddress);
 
-  const { count, rows } = await token_transfers.findAndCountAll({
+  const { count, rows } = await TokenTransfer.findAndCountAll({
     where: {
       [Op.and]: {
         [Op.or]: {
@@ -43,7 +42,7 @@ export async function getAccountTokenTransfers(r) {
 
 export async function getTokenInfo(r) {
   const address = convertHashToBuffer(r.params.address);
-  const token = await tokens.findByPk(address);
+  const token = await Token.findByPk(address);
 
   if (!token) {
     return error(Errors.NotFound, 'Token not found', { field: ['address'] });

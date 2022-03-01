@@ -1,15 +1,14 @@
+import { TokenTransfer } from '../../database/models/TokenTransfer';
+import { Transaction } from '../../database/models/Transaction';
+import { convertHashToBuffer } from '../../utils/address';
+import { Address } from '../../database/models/Address';
+import { Block } from '../../database/models/Block';
+import { Logs } from '../../database/models/logs';
 import { error, output } from '../../utils';
 import { Errors } from '../../utils/errors';
-import { transactions } from '../../database/models/transactions';
-import { addresses } from '../../database/models/addresses';
-import { blocks } from '../../database/models/blocks';
-import { tokens } from '../../database/models/tokens';
-import { logs } from '../../database/models/logs';
-import { token_transfers } from '../../database/models/token_transfers';
-import { convertHashToBuffer } from '../../utils/address';
 
 export async function getAllTxs(r) {
-  let { count, rows } = await transactions.findAndCountAll({
+  let { count, rows } = await Transaction.findAndCountAll({
     limit: r.query.limit,
     offset: r.query.offset,
     order: [['block_number', 'DESC']]
@@ -21,24 +20,24 @@ export async function getAllTxs(r) {
 export async function getTxByHash(r) {
   const transaction_hash = convertHashToBuffer(r.params.hash);
 
-  const tx = await transactions.findByPk(transaction_hash, {
+  const tx = await Transaction.findByPk(transaction_hash, {
     include: [{
-      model: addresses,
+      model: Address,
       as: 'from_address'
     }, {
-      model: blocks,
+      model: Block,
       as: 'block'
     }, {
-      model: addresses,
+      model: Address,
       as: 'to_address'
     }, {
-      model: addresses,
+      model: Address,
       as: 'contract'
     }, {
-      model: token_transfers,
+      model: TokenTransfer,
       as: 'token_transfers'
     }, {
-      model: logs,
+      model: Logs,
       as: 'logs'
     }]
   });

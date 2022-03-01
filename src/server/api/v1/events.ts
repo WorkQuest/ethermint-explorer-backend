@@ -1,7 +1,7 @@
-import { Op } from 'sequelize';
-import { output } from '../../utils';
-import { logs } from '../../database/models/logs';
 import { convertHashToBuffer } from '../../utils/address';
+import { Logs } from '../../database/models/Logs';
+import { output } from '../../utils';
+import { Op } from 'sequelize';
 
 export async function getEventsByContract(r) {
   let where = {
@@ -17,7 +17,7 @@ export async function getEventsByContract(r) {
       where['block_number'] = {[Op.lte]: r.query.maxBlock}
   }
 
-  const { count, rows } = await logs.findAndCountAll({
+  const { count, rows } = await Logs.findAndCountAll({
     where,
     limit: r.query.limit,
     offset: r.query.offset,
