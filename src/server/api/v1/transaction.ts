@@ -29,7 +29,7 @@ export async function getTransactionByHash(r) {
       as: 'to_address'
     }, {
       model: Address,
-      as: 'contract'
+      as: 'created_contract'
     }, {
       model: TokenTransfer,
       as: 'token_transfers'
