@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
 import * as handlers from '../../api/v1/account';
-import { getPaginationBySchema, outputOkSchema } from '../../database/schemes';
+import { getPaginationBySchema, outputOkSchema, paginationSchema } from '../../database/schemes';
 import { accountSchema } from '../../database/schemes/account';
 import { shortInternalTransactionSchema, shortTransactionSchema } from '../../database/schemes/transaction';
 import { logSchema } from '../../database/schemes/logs';
@@ -45,10 +45,7 @@ export default [{
       params: Joi.object({
         address: Joi.string().required()
       }).label('GetAccountLogsParams'),
-      query: Joi.object({
-        // limit: ,
-        // offset: ,
-      }).label('GetAccountLogsQuery'),
+      query: paginationSchema
     }
   }
 }];
