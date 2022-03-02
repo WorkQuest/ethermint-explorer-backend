@@ -1,6 +1,8 @@
-import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table } from 'sequelize-typescript';
 import { parseBufferedAddress } from '../../utils/address';
 import { Address } from './Address';
+import { AddressCurrentTokenBalance } from './AddressCurrentTokenBalance';
+import { AddressTokenBalance } from './AddressTokenBalance';
 
 @Table({ tableName: 'tokens' })
 export class Token extends Model {
@@ -47,4 +49,9 @@ export class Token extends Model {
 
   @Column({ type: DataType.BOOLEAN })
   skip_metadata: boolean;
+
+  @BelongsTo(() => Address) contractAddress: Address;
+
+  @HasMany(() => AddressTokenBalance) tokenBalances: AddressTokenBalance[];
+  @HasMany(() => AddressCurrentTokenBalance) currentTokenBalances: AddressCurrentTokenBalance[];
 }

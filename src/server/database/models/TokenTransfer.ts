@@ -85,8 +85,7 @@ export class TokenTransfer extends Model {
   block_hash: any;
 
   @BelongsTo(() => Block) block: Block;
-  @BelongsTo(() => Address, 'to_address_hash') toAddressHash: Address;
-  @BelongsTo(() => Address, 'from_address_hash') fromAddressHash: Address;
-  @BelongsTo(() => Address, 'token_contract_address_hash') tokenContractAddressHash: Address;
-
+  @BelongsTo(() => Address, 'to_address_hash') toAddress: Address;
+  @BelongsTo(() => Address, 'from_address_hash') fromAddress: Address;
+  @BelongsTo(() => Address, 'token_contract_address_hash') tokenContractAddress: Address;
 }

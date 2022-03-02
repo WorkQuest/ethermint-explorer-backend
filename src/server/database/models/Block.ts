@@ -1,6 +1,8 @@
 import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
 import { parseBufferedAddress, parseBufferedHash } from '../../utils/address';
 import { Transaction } from './Transaction';
+import { InternalTransaction } from './InternalTransaction';
+import { Logs } from './Logs';
 
 @Table({ tableName: 'blocks' })
 export class Block extends Model {
@@ -85,6 +87,7 @@ export class Block extends Model {
   @Column({ type: DataType.DECIMAL(100) })
   base_fee_per_gas: string;
 
-  @HasMany(() => Transaction)
-  transactions: Transaction[];
+  @HasMany(() => Logs) logs: Logs[];
+  @HasMany(() => Transaction) transactions: Transaction[];
+  @HasMany(() => InternalTransaction) internalTransactions: InternalTransaction[];
 }

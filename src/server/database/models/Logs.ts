@@ -1,4 +1,4 @@
-import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { parseBufferedAddress, parseBufferedHash } from '../../utils/address';
 import { Address } from './Address';
 import { Transaction } from './Transaction';
@@ -82,4 +82,8 @@ export class Logs extends Model {
 
   @Column({ type: DataType.INTEGER })
   block_number: number;
+
+  @BelongsTo(() => Block) block: Block;
+  @BelongsTo(() => Address) address: Address;
+  @BelongsTo(() => Transaction) transaction: Transaction;
 }

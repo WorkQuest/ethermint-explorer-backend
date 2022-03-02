@@ -3,8 +3,14 @@ import { parseBufferedAddress, parseBufferedHash } from '../../utils/address';
 import { Token } from './Token';
 import { SmartContract } from './SmartContract';
 import { AddressCoinBalance } from './AddressCoinBalance';
-import { Block } from './Block';
 import { TokenTransfer } from './TokenTransfer';
+import { Transaction } from './Transaction';
+import { InternalTransaction } from './InternalTransaction';
+import { Logs } from './Logs';
+import { AddressName } from './AddressName';
+import { AddressTokenBalance } from './AddressTokenBalance';
+import { AddressCoinBalanceDaily } from './AddressCoinBalanceDaily';
+import { AddressCurrentTokenBalance } from './AddressCurrentTokenBalance';
 
 @Table({ tableName: 'addresses' })
 export class Address extends Model {
@@ -51,9 +57,16 @@ export class Address extends Model {
   @Column({ type: DataType.BOOLEAN })
   verified: boolean;
 
-  @HasOne(() => Token) addressToken: Token;
-  @HasOne(() => SmartContract) addressContract: SmartContract;
+  @HasOne(() => Token) token: Token;
+  @HasOne(() => AddressName) name: AddressName;
+  @HasOne(() => SmartContract) smartContract: SmartContract;
 
+  @HasMany(() => Logs) logs: Logs[];
+  @HasMany(() => Transaction) transactions: Transaction[];
   @HasMany(() => TokenTransfer) tokenTransfers: TokenTransfer[];
-  @HasMany(() => AddressCoinBalance) addressCoinBalance: AddressCoinBalance[];
+  @HasMany(() => AddressCoinBalance) coinBalances: AddressCoinBalance[]
+  @HasMany(() => AddressTokenBalance) tokenBalances: AddressTokenBalance[];
+  @HasMany(() => InternalTransaction) internalTransactions: InternalTransaction[];
+  @HasMany(() => AddressCoinBalanceDaily) coinBalancesDaily: AddressCoinBalanceDaily[];
+  @HasMany(() => AddressCurrentTokenBalance) currentTokenBalances: AddressCurrentTokenBalance[];
 }

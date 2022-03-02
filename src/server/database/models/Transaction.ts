@@ -4,6 +4,7 @@ import { Block } from './Block';
 import { Address } from './Address';
 import { Logs } from './Logs';
 import { TokenTransfer } from './TokenTransfer';
+import { InternalTransaction } from './InternalTransaction';
 
 @Table({ tableName: 'transactions' })
 export class Transaction extends Model {
@@ -155,6 +156,8 @@ export class Transaction extends Model {
   @BelongsTo(() => Address, 'to_address_hash') toAddress: Address;
   @BelongsTo(() => Address, 'from_address_hash') fromAddress: Address;
   @BelongsTo(() => Address, 'created_contract_address_hash') createdContractAddress: Address;
+
+  @HasOne(() => InternalTransaction) internalTransaction: InternalTransaction;
 
   @HasMany(() => Logs) logs: Logs[];
   @HasMany(() => TokenTransfer) tokenTransfers: TokenTransfer[];

@@ -145,4 +145,8 @@ export class InternalTransaction extends Model {
   block_index: number;
 
   @BelongsTo(() => Block) block: Block;
+  @BelongsTo(() => Transaction) transaction: Transaction;
+  @BelongsTo(() => Address, 'to_address_hash') toAddress: Address;
+  @BelongsTo(() => Address, 'from_address_hash') fromAddress: Address;
+  @BelongsTo(() => Address, 'created_contract_address_hash') createdContractAddress: Address;
 }

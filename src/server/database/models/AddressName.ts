@@ -1,5 +1,6 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { parseBufferedAddress } from '../../utils/address';
+import { Address } from './Address';
 
 @Table({ tableName: 'address_names' })
 export class AddressName extends Model {
@@ -28,4 +29,6 @@ export class AddressName extends Model {
 
   @Column({ type: DataType.JSONB })
   metadata: object;
+
+  @BelongsTo(() => Address) address: Address;
 }

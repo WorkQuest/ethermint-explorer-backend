@@ -1,4 +1,4 @@
-import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { parseBufferedAddress } from '../../utils/address';
 import { Address } from './Address';
 import { Token } from './Token';
@@ -49,4 +49,7 @@ export class AddressCurrentTokenBalance extends Model {
 
   @Column({ type: DataType.DECIMAL })
   old_value: string;
+
+  @BelongsTo(() => Token) token: Token;
+  @BelongsTo(() => Address) address: Address;
 }

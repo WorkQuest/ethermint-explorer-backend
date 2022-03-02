@@ -1,4 +1,4 @@
-import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { parseBufferedAddress } from '../../utils/address';
 import { Address } from './Address';
 import { Token } from './Token';
@@ -46,4 +46,7 @@ export class AddressTokenBalance extends Model {
 
   @Column({ type: 'TIMESTAMP', allowNull: false })
   updated_at: Date;
+
+  @BelongsTo(() => Token) token: Token;
+  @BelongsTo(() => Address) address: Address;
 }

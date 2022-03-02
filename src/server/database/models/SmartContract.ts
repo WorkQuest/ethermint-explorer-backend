@@ -1,4 +1,4 @@
-import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { parseBufferedAddress } from '../../utils/address';
 import { Address } from './Address';
 
@@ -59,7 +59,8 @@ export class SmartContract extends Model {
   @Column({ type: DataType.BOOLEAN })
   partially_verified: boolean;
 
-
   @Column({ type: DataType.TEXT })
   file_path: string;
+
+  @BelongsTo(() => Address) address: Address;
 }
