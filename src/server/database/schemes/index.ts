@@ -44,6 +44,7 @@ export const valueNumberSchema = Joi.number().example(5000000000000);
 export const smallStringValueSchema = Joi.string().example('20');
 export const smallNumberValueSchema = Joi.number().example(20);
 export const hexDataSchema = Joi.string().example('0x608E35B...');
+export const stringDataSchema = Joi.string().example('294620473638...')
 export const blockNumberStringSchema = Joi.string().example('150000');
 export const blockNumberNumberSchema = Joi.number().example(150000);
 export const dateISOSchema = Joi.string().isoDate().example('2021-07-01T02:52:48+00:00');

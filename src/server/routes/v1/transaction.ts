@@ -1,6 +1,12 @@
 import * as Joi from 'joi';
 import * as handlers from '../../api/v1/transaction';
-import { paginationSchema } from '../../database/schemes';
+import { outputOkSchema, outputPaginationSchema, paginationSchema } from '../../database/schemes';
+import {
+  shortInternalTransactionSchema,
+  shortTransactionSchema,
+  shortTransactionWithTransfersSchema,
+  transactionSchema
+} from '../../database/schemes/transaction';
 
 export default [{
   method: 'GET',
@@ -12,6 +18,13 @@ export default [{
     description: 'Get all Transactions',
     validate: {
       query: paginationSchema
+    },
+    response: {
+      schema: outputPaginationSchema(
+        'transactions',
+        shortTransactionSchema,
+        'GetAllTransactionsSchema'
+      ).label('GetAllTransactionsResponse')
     }
   }
 }, {
@@ -26,6 +39,9 @@ export default [{
       params: Joi.object({
         hash: Joi.string().required(),
       }).label('GetTransactionByHashParams')
+    },
+    response: {
+      schema: outputOkSchema(transactionSchema).label('GetTransactionByHashResponse'),
     }
   }
 }, {
@@ -41,6 +57,13 @@ export default [{
         address: Joi.string().required()
       }).label('GetAccountTransactionsParams'),
       query: paginationSchema,
+    },
+    response: {
+      schema: outputPaginationSchema(
+        'transactions',
+        shortTransactionWithTransfersSchema,
+        'GetAccountTransactionSchema'
+      ).label('GetAccountTransactionsResponse')
     }
   }
 }, {
@@ -56,6 +79,13 @@ export default [{
         address: Joi.string().required()
       }).label('GetAccountInternalTransactionsParams'),
       query: paginationSchema,
+    },
+    response: {
+      schema: outputPaginationSchema(
+        'transactions',
+        shortInternalTransactionSchema,
+        'GetAccountInternalTransactionsSchema'
+      ).label('GetAccountInternalTransactionResponse')
     }
   }
 }];

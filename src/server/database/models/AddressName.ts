@@ -29,6 +29,4 @@ export class AddressName extends Model {
 
   @Column({ type: DataType.JSONB })
   metadata: object;
-
-  @BelongsTo(() => Address) address: Address;
 }

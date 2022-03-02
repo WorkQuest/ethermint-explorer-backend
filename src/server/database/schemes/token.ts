@@ -34,3 +34,11 @@ export const shortTokenTransferSchema = Joi.object({
   token_contract_address_hash: addressSchema,
   block: blockTimestampSchema
 }).label('ShortTokenTransfer');
+
+export const tokenTransferOnlyAmountSchema = Joi.object({
+  amount: valueStringSchema
+}).label('TokenTransferOnlyAmount')
+
+export const tokenTransferOnlyAmountArray = Joi.array()
+  .items(tokenTransferOnlyAmountSchema)
+  .label('TokenTransferOnlyAmountArray');

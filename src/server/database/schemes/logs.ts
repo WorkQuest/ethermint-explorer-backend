@@ -22,3 +22,5 @@ export const logSchema = Joi.object({
   updated_at: dateISOSchema,
   block_number: blockNumberNumberSchema
 }).label('Log');
+
+export const logArray = Joi.array().items(logSchema).label('LogArray');

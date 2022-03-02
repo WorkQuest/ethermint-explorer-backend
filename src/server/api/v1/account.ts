@@ -70,6 +70,7 @@ export async function getAccountByAddress(r) {
   const transactionsList = await Transaction.findAndCountAll({
     attributes: [
       'gas',
+      'hash',
       'error',
       'value',
       'gas_used',

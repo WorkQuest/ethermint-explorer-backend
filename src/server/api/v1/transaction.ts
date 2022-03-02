@@ -16,6 +16,7 @@ export async function getAllTransactions(r) {
   const { count, rows } = await Transaction.findAndCountAll({
     attributes: [
       'gas',
+      'hash',
       'error',
       'value',
       'gas_used',
@@ -86,6 +87,7 @@ export async function getAccountTransactions(r) {
   const { count, rows } = await Transaction.findAndCountAll({
     attributes: [
       'gas',
+      'hash',
       'error',
       'value',
       'gas_used',

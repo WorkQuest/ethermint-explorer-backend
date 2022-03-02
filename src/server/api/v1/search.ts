@@ -50,11 +50,11 @@ async function getAddress(query, extraParams = false) {
     return { searchResult, searchType: SearchType.None };
   }
 
-  if (searchResult.addressToken) {
+  if (searchResult.token) {
     return { searchResult, searchType: SearchType.Token };
   }
 
-  if (searchResult.addressContract) {
+  if (searchResult.smartContract) {
     return { searchResult, searchType: SearchType.Contract };
   }
 

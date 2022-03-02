@@ -19,6 +19,18 @@ export const addressCoinBalanceSchema = Joi.object({
   updated_at: dateISOSchema
 }).label('AddressCoinBalance');
 
+export const shortAccountSchema = Joi.object({
+  hash: addressSchema,
+  contractCode: hexDataSchema,
+  fetched_coin_balance: valueStringSchema,
+  fetched_coin_balance_block_number: blockNumberStringSchema,
+  inserted_at: dateISOSchema,
+  updated_at: dateISOSchema,
+  nonce: smallNumberValueSchema,
+  decompiled: Joi.boolean(),
+  verified: Joi.boolean(),
+}).label('ShortAccount');
+
 export const accountSchema = Joi.object({
   hash: addressSchema,
   contractCode: hexDataSchema,

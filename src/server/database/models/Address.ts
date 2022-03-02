@@ -58,7 +58,6 @@ export class Address extends Model {
   verified: boolean;
 
   @HasOne(() => Token) token: Token;
-  @HasOne(() => AddressName) name: AddressName;
   @HasOne(() => SmartContract) smartContract: SmartContract;
 
   @HasMany(() => Logs) logs: Logs[];
