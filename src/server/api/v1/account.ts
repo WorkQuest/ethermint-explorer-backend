@@ -22,10 +22,10 @@ export async function getAccountByAddress(r) {
   const account = await Address.findByPk(address, {
     include: [{
       model: Token,
-      as: 'addressToken',
+      as: 'token',
     }, {
       model: SmartContract,
-      as: 'addressContract',
+      as: 'smartContract',
     }]
   });
 

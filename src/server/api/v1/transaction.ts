@@ -1,8 +1,16 @@
-import { TokenTransfer, Transaction, Address, Block, Logs, InternalTransaction, Token } from '../../database';
-import { convertHashToBuffer } from '../../utils/address';
+import { Op } from 'sequelize';
 import { error, output } from '../../utils';
 import { Errors } from '../../utils/errors';
-import { Op } from 'sequelize';
+import { convertHashToBuffer } from '../../utils/address';
+import {
+  Logs,
+  Token,
+  Block,
+  Address,
+  Transaction,
+  TokenTransfer,
+  InternalTransaction,
+} from '../../database';
 
 export async function getAllTransactions(r) {
   const { count, rows } = await Transaction.findAndCountAll({
@@ -52,10 +60,10 @@ export async function getTransactionByHash(r) {
       include: [{
         attributes: [],
         model: Address,
-        as: 'tokenContractAddressHash',
+        as: 'tokenContractAddress',
         include: [{
           model: Token,
-          as: 'addressToken',
+          as: 'token',
           attributes: ['name', 'symbol', 'decimals'],
         }],
       }]
@@ -88,9 +96,9 @@ export async function getAccountTransactions(r) {
     ],
     where: {
       [Op.or]: {
+        to_address_hash: address,
         from_address_hash: address,
-        to_address_hash: address
-      }
+      },
     },
     include: [{
       as: 'block',
