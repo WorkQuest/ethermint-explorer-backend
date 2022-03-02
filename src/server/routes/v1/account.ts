@@ -1,5 +1,10 @@
 import * as Joi from 'joi';
 import * as handlers from '../../api/v1/account';
+import { getPaginationBySchema, outputOkSchema } from '../../database/schemes';
+import { accountSchema } from '../../database/schemes/account';
+import { shortInternalTransactionSchema, shortTransactionSchema } from '../../database/schemes/transaction';
+import { logSchema } from '../../database/schemes/logs';
+import { shortTokenTransferSchema } from '../../database/schemes/token';
 
 export default [{
   method: 'GET',
