@@ -1,4 +1,4 @@
-import { getAccountTokenTransfers, getTokenInfo } from '../../api/v1/token';
+import { getAccountTokenTransfers, getToken } from '../../api/v1/token';
 import { getTokenTransfers } from '../../api/v1/token'
 import { paginationSchema } from '../../database/schemes';
 import * as Joi from 'joi';
@@ -37,9 +37,9 @@ export default [{
 }, {
   method: 'GET',
   path: '/v1/token/{address}',
-  handler: getTokenInfo,
+  handler: getToken,
   options: {
-    id: 'v1.tx.getTokenInfo',
+    id: 'v1.token.getToken',
     tags: ['api', 'token'],
     description: 'Get token info',
     validate: {

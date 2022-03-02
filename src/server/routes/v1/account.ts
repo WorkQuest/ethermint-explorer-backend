@@ -1,5 +1,6 @@
 import * as Joi from 'joi';
 import * as handlers from '../../api/v1/account';
+import { getAccountInternalTransactions } from '../../api/v1/account';
 
 export default [{
   method: 'GET',
@@ -18,21 +19,22 @@ export default [{
       }).label('GetAccountByAddressQuery')
     }
   }
-},
-  // {
-  // method: 'GET',
-  // path: '/v1/account/{address}/balances',
-  // handler: getAccountBalances,
-  // options: {
-  //   id: 'v1.account.getAccountBalances',
-  //   tags: ['api', 'account'],
-  //   description: 'Get account balances',
-  //   validate: {
-  //     params: Joi.object({
-  //       address: addressSchema.required()
-  //     }).label('GetAccountBalancesParams'),
-  //     query: paginationSchema
-  //   }
-  // }
-// }
-];
+}, {
+  method: 'GET',
+  path: '/v1/account/{address}/logs',
+  handler: handlers.getAccountLogs,
+  options: {
+    id: 'v1.account.getAccountLogs',
+    tags: ['api', 'account'],
+    description: 'Get account logs',
+    validate: {
+      params: Joi.object({
+        address: Joi.string().required()
+      }).label('GetAccountLogsParams'),
+      query: Joi.object({
+        // limit: ,
+        // offset: ,
+      }).label('GetAccountLogsQuery'),
+    }
+  }
+}];

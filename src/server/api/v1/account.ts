@@ -17,6 +17,8 @@ export async function getAccountByAddress(r) {
   const { commonLimit } = r.query;
   const address = convertHashToBuffer(r.params.address);
 
+  AddressCoinBalance.removeAttribute('id');
+
   const account = await Address.findByPk(address, {
     include: [{
       model: Token,
@@ -27,11 +29,9 @@ export async function getAccountByAddress(r) {
     }]
   });
 
-  AddressCoinBalance.removeAttribute('id');
   const addressCoinBalance = await AddressCoinBalance.findOne({
     where: { address_hash: address },
     order: [['block_number', 'DESC']],
-    limit: 1
   });
 
   account.setDataValue('addressCoinBalance', addressCoinBalance);
@@ -116,37 +116,17 @@ export async function getAccountByAddress(r) {
   return output({ account, transactionsList, addressLogsList, tokenTransfersList, internalTransactionsList });
 }
 
-// export async function getAccountBalances(r) {
-//   let {count, rows} = await Balance.findAndCountAll({
-//     where: {
-//       accountAddress: r.params.address
-//     },
-//     limit: r.query.limit,
-//     offset: r.query.offset,
-//     include: [{
-//       model: Token,
-//       attributes: ['name', 'symbol', 'decimals', 'totalSupply']
-//     }]
-//   });
-//
-//   return output({ count, balances: rows });
-// }
-//
-
-export async function getAccountTxs(r) {
+export async function getAccountLogs(r) {
   const address = convertHashToBuffer(r.params.address);
 
-  const { count, rows } = await Transaction.findAndCountAll({
+  const { count, rows } = await Logs.findAndCountAll({
     where: {
-      [Op.or]: {
-        from_address_hash: address,
-        to_address_hash: address
-      }
+      address_hash: address,
     },
-    order: [['block_number', 'DESC']],
     limit: r.query.limit,
-    offset: r.query.offset
+    offset: r.query.offset,
+    order: [['block_number', 'DESC']],
   });
 
-  return output({ count, txs: rows });
+  return output({ count, logs: rows });
 }

@@ -39,7 +39,7 @@ export async function getAccountTokenTransfers(r) {
   return output({ count, txs: rows })
 }
 
-export async function getTokenInfo(r) {
+export async function getToken(r) {
   const address = convertHashToBuffer(r.params.address);
   const token = await Token.findByPk(address);
 

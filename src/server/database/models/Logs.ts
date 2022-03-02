@@ -83,3 +83,5 @@ export class Logs extends Model {
   @Column({ type: DataType.INTEGER })
   block_number: number;
 }
+
+Logs.removeAttribute('');
