@@ -16,6 +16,16 @@ export default [{
       query: Joi.object({
         commonLimit: Joi.number().default(25).label('AccountCommonLimit'),
       }).label('GetAccountByAddressQuery')
+    },
+    response: {
+      schema: outputOkSchema(Joi.object({
+        account: accountSchema,
+        transactionsList: getPaginationBySchema(shortTransactionSchema),
+        addressLogsList: getPaginationBySchema(logSchema),
+        tokenTransfersList: getPaginationBySchema(shortTokenTransferSchema),
+        internalTransactionsList: getPaginationBySchema(shortInternalTransactionSchema)
+      }).label('FullAccountSchema')
+      ).label('GetAccountByAddressResponse'),
     }
   }
 }, {
