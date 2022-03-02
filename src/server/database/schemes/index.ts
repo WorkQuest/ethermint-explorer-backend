@@ -12,6 +12,9 @@ export const bech32AddressSchema = Joi.string().regex(/wq[0-9a-f]{39}/).example(
 export const hexAddressSchema = Joi.string().regex(/0x[0-9a-f]{40}/).example('0x680d5ca4cfca05bbd4cbb5139768e37c73cefcd8');
 export const valueStringSchema = Joi.string().example('50000000000000000');
 export const valueNumberSchema = Joi.number().example(5000000000000);
+export const smallStringValueSchema = Joi.string().example('20');
+export const smallNumberValueSchema = Joi.number().example(20);
+export const hexDataSchema = Joi.string().example('0x608E35B...');
 export const blockNumberSchema = Joi.string().example('150000');
 export const dateISOSchema = Joi.string().isoDate().example('2021-07-01T02:52:48+00:00');
 
