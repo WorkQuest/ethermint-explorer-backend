@@ -83,3 +83,36 @@ export const transactionSchema = Joi.object({
   tokenTransfers: tokenTransferOnlyAmountArray,
   logs: logArray
 }).label('Transaction');
+
+export const rawTransactionSchema = Joi.object({
+  hash: hashSchema,
+  input: hexDataSchema,
+  block_hash: hashSchema,
+  from_address_hash: addressSchema,
+  to_address_hash: addressSchema,
+  created_contract_address_hash: addressSchema,
+  old_block_hash: hashSchema,
+  cumulative_gas_used: valueStringSchema,
+  error: Joi.string(),
+  gas: valueStringSchema,
+  gas_price: valueStringSchema,
+  gas_used: valueStringSchema,
+  index: Joi.number().example(1),
+  nonce: smallNumberValueSchema,
+  r: stringDataSchema,
+  s: stringDataSchema,
+  status: Joi.number().example(1),
+  v: stringDataSchema,
+  value: valueStringSchema,
+  inserted_at: dateISOSchema,
+  updated_at: dateISOSchema,
+  block_number: blockNumberNumberSchema,
+  created_contract_code_indexed_at: dateISOSchema,
+  earliest_processing_start: dateISOSchema,
+  revert_reason: Joi.string(),
+  max_priority_fee_per_gas: smallStringValueSchema,
+  max_fee_per_gas: smallStringValueSchema,
+  type: Joi.number().example(1),
+}).label('RawTransaction')
+
+export const rawTransactionArray = Joi.array().items(rawTransactionSchema).label('RawTransactionArray');

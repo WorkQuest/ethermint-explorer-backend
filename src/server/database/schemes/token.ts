@@ -1,12 +1,12 @@
 import * as Joi from 'joi';
+import { blockTimestampSchema } from './block';
 import {
-  addressSchema,
+  addressSchema, blockNumberNumberSchema,
   dateISOSchema, hashSchema,
   smallNumberValueSchema,
   smallStringValueSchema,
   valueStringSchema
 } from './index';
-import { blockTimestampSchema } from './block';
 
 export const tokenNameSchema = Joi.string().example('WorkQuest Token').label('TokenName');
 export const tokenSymbolSchema = Joi.string().example('WQT').label('TokenSymbol');
@@ -25,6 +25,20 @@ export const tokenSchema = Joi.object({
   bridged: Joi.boolean(),
   skip_metadata: Joi.boolean(),
 }).label('Token');
+
+export const tokenTransferSchema = Joi.object({
+  transaction_hash: hashSchema,
+  from_address_hash: addressSchema,
+  to_address_hash: addressSchema,
+  token_contract_address_hash: addressSchema,
+  block_hash: hashSchema,
+  log_index: Joi.number().example(0),
+  amount: valueStringSchema,
+  token_id: smallStringValueSchema,
+  inserted_at: dateISOSchema,
+  updated_at: dateISOSchema,
+  block_number: blockNumberNumberSchema
+}).label('TokenTransfer');
 
 export const shortTokenTransferSchema = Joi.object({
   amount: valueStringSchema,

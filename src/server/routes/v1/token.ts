@@ -1,6 +1,7 @@
 import * as handlers from '../../api/v1/token';
-import { paginationSchema } from '../../database/schemes';
+import { outputOkSchema, outputPaginationSchema, paginationSchema } from '../../database/schemes';
 import * as Joi from 'joi';
+import { tokenSchema, tokenTransferSchema } from '../../database/schemes/token';
 
 export default [{
   method: 'GET',
@@ -14,6 +15,9 @@ export default [{
       params: Joi.object({
         address: Joi.string().required(),
       }).label('GetTokenParams')
+    },
+    response: {
+      schema: outputOkSchema(tokenSchema).label('GetTokenResponse')
     }
   }
 }, {
@@ -29,6 +33,10 @@ export default [{
         address: Joi.string().required()
       }).label('GetAccountByAddressParams'),
       query: paginationSchema
+    },
+    response: {
+      schema: outputPaginationSchema('txs', tokenTransferSchema, 'GetTokenTransfersSchema')
+        .label('GetTokenTransfersResponse')
     }
   }
 }, {
@@ -45,6 +53,10 @@ export default [{
         tokenAddress: Joi.string().required()
       }).label('GetAccountTokenTransfersParams'),
       query: paginationSchema
+    },
+    response: {
+      schema: outputPaginationSchema('txs', tokenTransferSchema, 'GetAccountTokenTransfersSchema')
+        .label('GetAccountTokenTransfersResponse')
     }
   }
 }];
