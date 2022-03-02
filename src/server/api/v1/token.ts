@@ -31,9 +31,9 @@ export async function getAccountTokenTransfers(r) {
         token_contract_address_hash: tokenAddress
       }
     },
-    order: [['block_number', 'DESC']],
     limit: r.query.limit,
-    offset: r.query.offset
+    offset: r.query.offset,
+    order: [['block_number', 'DESC']],
   });
 
   return output({ count, txs: rows })

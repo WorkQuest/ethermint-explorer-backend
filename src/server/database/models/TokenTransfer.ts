@@ -1,4 +1,4 @@
-import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, ForeignKey, HasOne, Model, Table } from 'sequelize-typescript';
 import { parseBufferedAddress, parseBufferedHash } from '../../utils/address';
 import { Transaction } from './Transaction';
 import { Address } from './Address';
@@ -85,4 +85,8 @@ export class TokenTransfer extends Model {
   block_hash: any;
 
   @BelongsTo(() => Block) block: Block;
+  @BelongsTo(() => Address, 'to_address_hash') toAddressHash: Address;
+  @BelongsTo(() => Address, 'from_address_hash') fromAddressHash: Address;
+  @BelongsTo(() => Address, 'token_contract_address_hash') tokenContractAddressHash: Address;
+
 }

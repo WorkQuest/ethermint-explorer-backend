@@ -151,11 +151,11 @@ export class Transaction extends Model {
   @Column({ type: DataType.INTEGER })
   type: number;
 
-  @BelongsTo(() => Address, 'from_address_hash') from_address: Address;
-  @BelongsTo(() => Address, 'to_address_hash') to_address: Address;
-  @BelongsTo(() => Address, 'created_contract_address_hash') contract: Address;
   @BelongsTo(() => Block) block: Block;
+  @BelongsTo(() => Address, 'to_address_hash') toAddress: Address;
+  @BelongsTo(() => Address, 'from_address_hash') fromAddress: Address;
+  @BelongsTo(() => Address, 'created_contract_address_hash') createdContractAddress: Address;
 
   @HasMany(() => Logs) logs: Logs[];
-  @HasMany(() => TokenTransfer) token_transfers: TokenTransfer[];
+  @HasMany(() => TokenTransfer) tokenTransfers: TokenTransfer[];
 }

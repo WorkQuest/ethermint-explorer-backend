@@ -1,38 +1,64 @@
-import { TokenTransfer, Transaction, Address, Block, Logs, InternalTransaction } from '../../database';
+import { TokenTransfer, Transaction, Address, Block, Logs, InternalTransaction, Token } from '../../database';
 import { convertHashToBuffer } from '../../utils/address';
 import { error, output } from '../../utils';
 import { Errors } from '../../utils/errors';
 import { Op } from 'sequelize';
 
 export async function getAllTransactions(r) {
-  let { count, rows } = await Transaction.findAndCountAll({
+  const { count, rows } = await Transaction.findAndCountAll({
+    attributes: [
+      'gas',
+      'error',
+      'value',
+      'gas_used',
+      'gas_price',
+      'block_number',
+      'to_address_hash',
+      'from_address_hash',
+    ],
+    include: [{
+      as: 'block',
+      model: Block,
+      attributes: ['timestamp'],
+    }],
     limit: r.query.limit,
     offset: r.query.offset,
-    order: [['block_number', 'DESC']]
+    order: [['block_number', 'DESC']],
   });
 
-  return output({ count, txs: rows });
+  return output({ count, transactions: rows });
 }
 
 export async function getTransactionByHash(r) {
-  const transaction_hash = convertHashToBuffer(r.params.hash);
+  const transactionHash = convertHashToBuffer(r.params.hash);
 
-  const tx = await Transaction.findByPk(transaction_hash, {
+  const tx = await Transaction.findByPk(transactionHash, {
     include: [{
       model: Address,
-      as: 'from_address'
+      as: 'fromAddress'
     }, {
       model: Block,
       as: 'block'
     }, {
       model: Address,
-      as: 'to_address'
+      as: 'toAddress'
     }, {
       model: Address,
-      as: 'contract'
+      as: 'createdContractAddress'
     }, {
       model: TokenTransfer,
-      as: 'token_transfers'
+      as: 'tokenTransfers',
+      attributes: ['amount'],
+      include: [{
+        attributes: [],
+        model: Address,
+        as: 'tokenContractAddressHash',
+        include: [{
+          model: Token,
+          as: 'addressToken',
+          attributes: ['name', 'symbol', 'decimals'],
+        }],
+      }]
     }, {
       model: Logs,
       as: 'logs'
@@ -40,7 +66,7 @@ export async function getTransactionByHash(r) {
   });
 
   if (!tx) {
-    return error(Errors.NotFound, 'Tx not found', {});
+    return error(Errors.NotFound, 'Transaction not found', {});
   }
 
   return output(tx);
@@ -66,11 +92,15 @@ export async function getAccountTransactions(r) {
         to_address_hash: address
       }
     },
-    include: {
+    include: [{
       as: 'block',
       model: Block,
       attributes: ['timestamp']
-    },
+    }, {
+      as: 'tokenTransfers',
+      model: TokenTransfer,
+      attributes: ['amount'],
+    }],
     limit: r.query.limit,
     offset: r.query.offset,
     order: [['block_number', 'DESC']],

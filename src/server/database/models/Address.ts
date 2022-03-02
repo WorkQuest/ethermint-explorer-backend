@@ -1,8 +1,10 @@
-import { Column, DataType, HasMany, HasOne, Model, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, HasMany, HasOne, Model, Table } from 'sequelize-typescript';
 import { parseBufferedAddress, parseBufferedHash } from '../../utils/address';
 import { Token } from './Token';
 import { SmartContract } from './SmartContract';
 import { AddressCoinBalance } from './AddressCoinBalance';
+import { Block } from './Block';
+import { TokenTransfer } from './TokenTransfer';
 
 @Table({ tableName: 'addresses' })
 export class Address extends Model {
@@ -52,5 +54,6 @@ export class Address extends Model {
   @HasOne(() => Token) addressToken: Token;
   @HasOne(() => SmartContract) addressContract: SmartContract;
 
+  @HasMany(() => TokenTransfer) tokenTransfers: TokenTransfer[];
   @HasMany(() => AddressCoinBalance) addressCoinBalance: AddressCoinBalance[];
 }

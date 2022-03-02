@@ -1,6 +1,5 @@
 import * as Joi from 'joi';
 import * as handlers from '../../api/v1/account';
-import { getAccountInternalTransactions } from '../../api/v1/account';
 
 export default [{
   method: 'GET',
