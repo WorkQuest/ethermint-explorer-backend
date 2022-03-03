@@ -73,6 +73,7 @@ export async function getAccountByAddress(r) {
       'hash',
       'error',
       'value',
+      'status',
       'gas_used',
       'gas_price',
       'block_number',

@@ -22,6 +22,7 @@ export const shortTransactionSchema = Joi.object({
   hash: hashSchema,
   error: Joi.string(),
   value: valueStringSchema,
+  status: Joi.number().example(1),
   gas_used: valueStringSchema,
   gas_price: smallStringValueSchema,
   block_number: blockNumberNumberSchema,
