@@ -1,7 +1,17 @@
 import * as handlers from '../../api/v1/token';
-import { outputOkSchema, outputPaginationSchema, paginationSchema } from '../../database/schemes';
+import {
+  getPaginationBySchema,
+  outputOkSchema,
+  outputPaginationSchema,
+  paginationSchema,
+} from '../../database/schemes';
 import * as Joi from 'joi';
-import { tokenSchema, tokenTransferSchema } from '../../database/schemes/token';
+import {
+  shortTokenTransferSchema,
+  tokenHolderSchema,
+  tokenSchema,
+  tokenTransferSchema
+} from '../../database/schemes/token';
 
 export default [{
   method: 'GET',
@@ -14,10 +24,15 @@ export default [{
     validate: {
       params: Joi.object({
         address: Joi.string().required(),
-      }).label('GetTokenParams')
+      }).label('GetTokenParams'),
+      query: paginationSchema
     },
     response: {
-      schema: outputOkSchema(tokenSchema).label('GetTokenResponse')
+      schema: outputOkSchema(Joi.object({
+        token: tokenSchema,
+        transfers: getPaginationBySchema(shortTokenTransferSchema),
+        holders: getPaginationBySchema(tokenHolderSchema)
+      })).label('GetTokenResponse')
     }
   }
 }, {
@@ -57,6 +72,22 @@ export default [{
     response: {
       schema: outputPaginationSchema('txs', tokenTransferSchema, 'GetAccountTokenTransfersSchema')
         .label('GetAccountTokenTransfersResponse')
+    }
+  }
+}, {
+  method: 'GET',
+  path: '/v1/tokens',
+  handler: handlers.getTokens,
+  options: {
+    id: 'v1.token.getTokens',
+    tags: ['api', 'token'],
+    description: 'Get tokens list',
+    validate: {
+      query: paginationSchema
+    },
+    response: {
+      schema: outputPaginationSchema('tokens', tokenSchema, 'GetTokensSchema')
+        .label('GetTokensResponse')
     }
   }
 }];

@@ -75,7 +75,7 @@ export async function initDatabase(){
       updatedAt: 'updated_at',
     }
   });
-  await sequelize.sync();
+
   return sequelize;
 }
 
