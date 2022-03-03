@@ -1,15 +1,19 @@
 import * as Joi from 'joi';
+import { logArray } from './logs';
+import { shortAccountSchema } from './account';
+import { tokenTransferOnlyAmountArray } from './token';
 import { blockSchema, blockTimestampSchema } from './block';
 import {
+  hashSchema,
+  hexDataSchema,
+  dateISOSchema,
   addressSchema,
+  stringDataSchema,
+  valueStringSchema,
+  smallStringValueSchema,
+  smallNumberValueSchema,
   blockNumberNumberSchema,
-  dateISOSchema, hashSchema, hexDataSchema, smallNumberValueSchema,
-  smallStringValueSchema, stringDataSchema,
-  valueStringSchema
 } from './index';
-import { tokenTransferOnlyAmountArray } from './token';
-import { shortAccountSchema } from './account';
-import { logArray, logSchema } from './logs';
 
 export const shortTransactionSchema = Joi.object({
   from_address_hash: addressSchema,

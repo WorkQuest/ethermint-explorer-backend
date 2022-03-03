@@ -1,10 +1,10 @@
 import * as Joi from 'joi';
 import * as handlers from '../../api/v1/account';
-import { getPaginationBySchema, outputOkSchema, paginationSchema } from '../../database/schemes';
 import { accountSchema } from '../../database/schemes/account';
-import { shortInternalTransactionSchema, shortTransactionSchema } from '../../database/schemes/transaction';
 import { logSchema } from '../../database/schemes/logs';
 import { shortTokenTransferSchema } from '../../database/schemes/token';
+import { getPaginationBySchema, outputOkSchema, paginationSchema } from '../../database/schemes';
+import { shortInternalTransactionSchema, shortTransactionSchema } from '../../database/schemes/transaction';
 
 export default [{
   method: 'GET',
@@ -23,13 +23,14 @@ export default [{
       }).label('GetAccountByAddressQuery')
     },
     response: {
-      schema: outputOkSchema(Joi.object({
-        account: accountSchema,
-        transactionsList: getPaginationBySchema(shortTransactionSchema),
-        addressLogsList: getPaginationBySchema(logSchema),
-        tokenTransfersList: getPaginationBySchema(shortTokenTransferSchema),
-        internalTransactionsList: getPaginationBySchema(shortInternalTransactionSchema)
-      }).label('FullAccountSchema')
+      schema: outputOkSchema(
+        Joi.object({
+          account: accountSchema,
+          transactionsList: getPaginationBySchema(shortTransactionSchema),
+          addressLogsList: getPaginationBySchema(logSchema),
+          tokenTransfersList: getPaginationBySchema(shortTokenTransferSchema),
+          internalTransactionsList: getPaginationBySchema(shortInternalTransactionSchema)
+        }).label('FullAccountSchema')
       ).label('GetAccountByAddressResponse'),
     }
   }
