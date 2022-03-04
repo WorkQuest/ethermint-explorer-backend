@@ -37,11 +37,11 @@ async function getAddress(query, extraParams = false) {
     where: { hash },
     include: [{
       model: Token,
-      as: 'addressToken',
+      as: 'token',
       required: extraParams
     }, {
       model: SmartContract,
-      as: 'addressContract',
+      as: 'smartContract',
       required: false
     }]
   });
@@ -65,7 +65,7 @@ async function getTokens(query) {
   const searchResult = await Address.findAndCountAll({
     include: [{
       model: Token,
-      as: 'addressToken',
+      as: 'token',
       required: true,
       where: {
         [Op.or]: {
@@ -75,7 +75,7 @@ async function getTokens(query) {
       },
     }, {
       model: SmartContract,
-      as: 'addressContract'
+      as: 'smartContract'
     }]
   });
 
