@@ -1,8 +1,7 @@
 import { convertHashToBuffer } from '../../utils/address';
 import { TokenTransfer, Token, AddressCurrentTokenBalance, Block } from '../../database';
-import { error, output } from '../../utils';
-import { Errors } from '../../utils/errors';
-import { col, fn, literal, Op, QueryTypes } from 'sequelize';
+import { output } from '../../utils';
+import { Op } from 'sequelize';
 
 export async function getTokenTransfers(r) {
   const address = convertHashToBuffer(r.params.address);
@@ -43,7 +42,7 @@ export async function getToken(r) {
   const address = convertHashToBuffer(r.params.address);
   const token = await Token.findByPk(address);
 
-  const transfers = await TokenTransfer.findAndCountAll({
+  const transfersList = await TokenTransfer.findAndCountAll({
     where: { token_contract_address_hash: address },
     attributes: ['transaction_hash', 'from_address_hash', 'to_address_hash', 'amount', 'token_contract_address_hash'],
     include: {
@@ -51,19 +50,18 @@ export async function getToken(r) {
       as: 'block',
       attributes: ['timestamp']
     },
-    limit: r.query.limit,
-    offset: r.query.offset
+    order: [['block_number', 'DESC']],
+    limit: r.query.commonLimit,
   });
 
-  const holders = await AddressCurrentTokenBalance.findAndCountAll({
+  const holdersList = await AddressCurrentTokenBalance.findAndCountAll({
     where: { token_contract_address_hash: address },
     attributes: ['address_hash', 'value', 'value_fetched_at'],
     order: [['value_fetched_at', 'DESC']],
-    limit: r.query.limit,
-    offset: r.query.offset
+    limit: r.query.commonLimit,
   });
 
-  return output({ token, transfers, holders });
+  return output({ token, transfersList, holdersList });
 }
 
 export async function getTokens(r) {
@@ -73,4 +71,17 @@ export async function getTokens(r) {
   });
 
   return output({ tokens: rows, count });
+}
+
+export async function getTokenHolders(r) {
+  const address = convertHashToBuffer(r.params.address);
+  const { count, rows } = await AddressCurrentTokenBalance.findAndCountAll({
+    where: { token_contract_address_hash: address },
+    attributes: ['address_hash', 'value', 'value_fetched_at'],
+    order: [['value_fetched_at', 'DESC']],
+    limit: r.query.limit,
+    offset: r.query.offset
+  });
+
+  return output({ holders: rows, count });
 }

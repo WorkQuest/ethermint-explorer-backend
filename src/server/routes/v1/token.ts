@@ -25,13 +25,15 @@ export default [{
       params: Joi.object({
         address: Joi.string().required(),
       }).label('GetTokenParams'),
-      query: paginationSchema
+      query: Joi.object({
+        commonLimit: Joi.number().default(25)
+      }).label('GetTokenQuery')
     },
     response: {
       schema: outputOkSchema(Joi.object({
         token: tokenSchema,
-        transfers: getPaginationBySchema(shortTokenTransferSchema),
-        holders: getPaginationBySchema(tokenHolderSchema)
+        transfersList: getPaginationBySchema(shortTokenTransferSchema),
+        holdersList: getPaginationBySchema(tokenHolderSchema)
       })).label('GetTokenResponse')
     }
   }
@@ -88,6 +90,24 @@ export default [{
     response: {
       schema: outputPaginationSchema('tokens', tokenSchema, 'GetTokensSchema')
         .label('GetTokensResponse')
+    }
+  }
+}, {
+  method: 'GET',
+  path: '/v1/token/{address}/holders',
+  handler: handlers.getTokenHolders,
+  options: {
+    id: 'v1.token.getTokenHolders',
+    tags: ['api', 'token'],
+    description: 'Get token holders',
+    validate: {
+      params: Joi.object({
+        address: Joi.string().required()
+      }).label('GetTokenHoldersParams')
+    },
+    response: {
+      schema: outputPaginationSchema('holders', tokenHolderSchema, 'GetTokenHoldersSchema')
+        .label('GetTokenHoldersResponse')
     }
   }
 }];

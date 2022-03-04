@@ -62,3 +62,14 @@ export const tokenTransferOnlyAmountSchema = Joi.object({
 export const tokenTransferOnlyAmountArray = Joi.array()
   .items(tokenTransferOnlyAmountSchema)
   .label('TokenTransferOnlyAmountArray');
+
+export const shortTokenBalanceSchema = Joi.object({
+  address_hash: addressSchema,
+  token_contract_address_hash: addressSchema,
+  value: valueStringSchema,
+  value_fetched_at: dateISOSchema,
+  name: tokenNameSchema,
+  symbol: tokenSymbolSchema
+}).label('ShortTokenBalance');
+
+export const shortTokenBalanceArray = Joi.array().items(shortTokenBalanceSchema).label('ShortTokenBalanceArray');

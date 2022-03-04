@@ -15,8 +15,8 @@ export const blockSchema = Joi.object({
   parent_hash: hashSchema,
   consensus: Joi.boolean(),
   difficulty: smallStringValueSchema,
-  gas_limit: valueStringSchema,
-  gas_used: valueStringSchema,
+  gas_limit: smallStringValueSchema,
+  gas_used: smallStringValueSchema,
   number: blockNumberStringSchema,
   size: smallNumberValueSchema,
   timestamp: dateISOSchema,
@@ -26,6 +26,19 @@ export const blockSchema = Joi.object({
   refetch_needed: Joi.boolean(),
   base_fee_per_gas: smallStringValueSchema
 }).label('Block')
+
+export const shortBlockSchema = Joi.object({
+  hash: hashSchema,
+  miner_hash: addressSchema,
+  parent_hash: hashSchema,
+  gas_limit: smallStringValueSchema,
+  gas_used: smallStringValueSchema,
+  number: blockNumberStringSchema,
+  size: smallNumberValueSchema,
+  timestamp: dateISOSchema,
+  base_fee_per_gas: smallStringValueSchema,
+  transactionsCount: smallStringValueSchema
+}).label('ShortBlock');
 
 export const blockTimestampSchema = Joi.object({
   timestamp: dateISOSchema

@@ -1,5 +1,5 @@
 import * as Joi from 'joi';
-import { tokenSchema } from './token';
+import { shortTokenBalanceArray, tokenSchema } from './token';
 import {
   addressSchema,
   blockNumberStringSchema,
@@ -41,9 +41,10 @@ export const accountSchema = Joi.object({
   nonce: smallNumberValueSchema,
   decompiled: Joi.boolean(),
   verified: Joi.boolean(),
-  addressToken: tokenSchema,
-  addressContract: contractSchema,
-  addressCoinBalance: addressCoinBalanceSchema
+  token: tokenSchema,
+  smartContract: contractSchema,
+  addressCoinBalance: addressCoinBalanceSchema,
+  addressTokensBalances: shortTokenBalanceArray,
 }).label('Account');
 
 

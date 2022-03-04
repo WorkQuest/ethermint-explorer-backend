@@ -1,7 +1,8 @@
 import { convertHashToBuffer } from '../../utils/address';
 import { output } from '../../utils';
-import { Op } from 'sequelize';
+import { literal, Op } from 'sequelize';
 import {
+  AddressCurrentTokenBalance,
   InternalTransaction,
   AddressCoinBalance,
   TokenTransfer,
@@ -30,11 +31,27 @@ export async function getAccountByAddress(r) {
   });
 
   const addressCoinBalance = await AddressCoinBalance.findOne({
+    attributes: { exclude: ['inserted_at', 'updated_at', 'block_number'] },
     where: { address_hash: address },
     order: [['block_number', 'DESC']],
   });
 
+  const addressTokenBalances = await AddressCurrentTokenBalance.findAll({
+    attributes: {
+      exclude: ['id', 'block_number', 'inserted_at', 'updated_at', 'old_value'],
+      include: [[literal('token.name'), 'name'], [literal('token.symbol'), 'symbol']]
+    },
+    where: { address_hash: address },
+    include: {
+      model: Token,
+      as: 'token',
+      attributes: []
+    },
+    order: [['block_number', 'DESC']]
+  });
+
   account.setDataValue('addressCoinBalance', addressCoinBalance);
+  account.setDataValue('addressTokensBalances', addressTokenBalances);
 
   const addressLogsList = await Logs.findAndCountAll({
     where: {
