@@ -1,4 +1,4 @@
-import { convertHashToBuffer } from '../../utils/address';
+import { convertAddressToHex, convertHashToBuffer } from '../../utils/address';
 import { output } from '../../utils';
 import { literal, Op } from 'sequelize';
 import {

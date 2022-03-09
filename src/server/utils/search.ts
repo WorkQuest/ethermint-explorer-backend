@@ -16,15 +16,15 @@ export const enum SearchFilter {
 }
 
 export function getSearchType(query: string): SearchType {
-  if (!query.startsWith('0x') && !isNaN(Number(query))) {
+  if (!query.startsWith('0x') && !query.startsWith('wq1') && !isNaN(Number(query))) {
     return SearchType.Block;
   }
 
-  if (!query.startsWith('0x')) {
+  if (!query.startsWith('0x') && !query.startsWith('wq1')) {
     return SearchType.Tokens;
   }
 
-  if (query.length === 42) {
+  if (query.length === 42 || query.length === 41) {
     return SearchType.Address;
   }
 

@@ -1,6 +1,17 @@
 import converter from 'bech32-converting';
 import { Buffer } from 'buffer';
 
+export const enum AddressType {
+  Hex = 0,
+  Bech32 = 1
+}
+
+export function convertAddressToHex(address: string): string {
+  const isBech32 = address.startsWith('wq1');
+
+  return isBech32 ? converter('wq').toHex(address) : address;
+}
+
 export function parseBufferedAddress(address: Buffer) {
   if (!address) {
     return null;
@@ -23,9 +34,13 @@ export function parseBufferedHash(hash: Buffer) {
 }
 
 export function convertHashToBuffer(address: string): Buffer {
-  const processedAddress = address.startsWith('0x') ?
-    address.slice(2).toUpperCase() :
-    address.toUpperCase();
+  const isBech32 = address.startsWith('wq1');
 
-  return Buffer.from(processedAddress, 'hex');
+  const hexAddress = isBech32 ? converter('wq').toHex(address) : address;
+
+  const processedHexAddress = hexAddress.startsWith('0x') ?
+    hexAddress.slice(2).toUpperCase() :
+    hexAddress.toUpperCase();
+
+  return Buffer.from(processedHexAddress, 'hex');
 }
