@@ -1,7 +1,7 @@
 import { convertHashToBuffer } from '../../utils/address';
-import { TokenTransfer, Token, AddressCurrentTokenBalance, Block } from '../../database';
+import { TokenTransfer, Token, AddressCurrentTokenBalance, Block, Address } from '../../database';
 import { output } from '../../utils';
-import { Op } from 'sequelize';
+import { fn, literal, Op } from 'sequelize';
 
 export async function getTokenTransfers(r) {
   const address = convertHashToBuffer(r.params.address);
@@ -67,7 +67,8 @@ export async function getToken(r) {
 export async function getTokens(r) {
   const { rows, count } = await Token.findAndCountAll({
     limit: r.query.limit,
-    offset: r.query.offset
+    offset: r.query.offset,
+    order: [['holder_count', 'DESC']],
   });
 
   return output({ tokens: rows, count });
@@ -84,4 +85,29 @@ export async function getTokenHolders(r) {
   });
 
   return output({ holders: rows, count });
+}
+
+export async function getAllTokenTransfers(r) {
+  const { count, rows } = await TokenTransfer.findAndCountAll({
+    attributes: ['transaction_hash', 'from_address_hash', 'to_address_hash', 'amount', 'token_contract_address_hash'],
+    include: [{
+      model: Block,
+      as: 'block',
+      attributes: ['timestamp']
+    }, {
+      model: Address,
+      as: 'tokenContractAddress',
+      attributes: ['hash'],
+      include: [{
+        model: Token,
+        as: 'token',
+        attributes: ['name', 'symbol']
+      }]
+    }],
+    order: [['block_number', 'DESC']],
+    limit: r.query.limit,
+    offset: r.query.offset,
+  });
+
+  return output({ transfers: rows, count });
 }

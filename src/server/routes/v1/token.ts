@@ -10,7 +10,7 @@ import {
   shortTokenTransferSchema,
   tokenHolderSchema,
   tokenSchema,
-  tokenTransferSchema
+  tokenTransferSchema, tokenTransferWithTokenSchema
 } from '../../database/schemes/token';
 
 export default [{
@@ -108,6 +108,22 @@ export default [{
     response: {
       schema: outputPaginationSchema('holders', tokenHolderSchema, 'GetTokenHoldersSchema')
         .label('GetTokenHoldersResponse')
+    }
+  }
+}, {
+  method: 'GET',
+  path: '/v1/token/transfers',
+  handler: handlers.getAllTokenTransfers,
+  options: {
+    id: 'v1.token.getAllTokenTransfers',
+    tags: ['api', 'token'],
+    description: 'Get all token transfers',
+    validate: {
+      query: paginationSchema
+    },
+    response: {
+      schema: outputPaginationSchema('transfers', tokenTransferWithTokenSchema, 'GetAllTokenTransfersSchema')
+        .label('GetAllTokenTransfersResponse')
     }
   }
 }];

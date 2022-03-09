@@ -12,6 +12,16 @@ export const tokenNameSchema = Joi.string().example('WorkQuest Token').label('To
 export const tokenSymbolSchema = Joi.string().example('WQT').label('TokenSymbol');
 export const tokenTypeSchema = Joi.string().example('ERC-20');
 
+export const tokenInfoSchema = Joi.object({
+  name: tokenNameSchema,
+  symbol: tokenSymbolSchema
+}).label('TokenInfo');
+
+export const tokenOnlyInfoHashSchema = Joi.object({
+  hash: addressSchema,
+  token: tokenInfoSchema
+}).label('TokenInfoHash');
+
 export const tokenSchema = Joi.object({
   contract_address_hash: addressSchema,
   name: tokenNameSchema,
@@ -73,3 +83,13 @@ export const shortTokenBalanceSchema = Joi.object({
 }).label('ShortTokenBalance');
 
 export const shortTokenBalanceArray = Joi.array().items(shortTokenBalanceSchema).label('ShortTokenBalanceArray');
+
+export const tokenTransferWithTokenSchema = Joi.object({
+  transaction_hash: hashSchema,
+  from_address_hash: addressSchema,
+  to_address_hash: addressSchema,
+  token_contract_address_hash: addressSchema,
+  amount: valueStringSchema,
+  block: blockTimestampSchema,
+  tokenContractAddress: tokenOnlyInfoHashSchema
+}).label('TokenTransferWithToken');
