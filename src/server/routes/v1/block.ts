@@ -1,4 +1,4 @@
-import { getBlockById, getBlocks, getTransactionsByBlock } from '../../api/v1/block';
+import * as handlers from '../../api/v1/block';
 import { blockSchema, shortBlockSchema } from '../../database/schemes/block';
 import { shortTransactionSchema } from '../../database/schemes/transaction';
 import {
@@ -12,7 +12,7 @@ import * as Joi from 'joi'
 export default [{
   method: 'GET',
   path: '/v1/blocks',
-  handler: getBlocks,
+  handler: handlers.getBlocks,
   options: {
     id: 'v1.block.getAll',
     tags: ['api', 'block'],
@@ -31,7 +31,7 @@ export default [{
 }, {
   method: 'GET',
   path: '/v1/block/{blockNumber}',
-  handler: getBlockById,
+  handler: handlers.getBlockById,
   options: {
     id: 'v1.block.getById',
     tags: ['api', 'block'],
@@ -50,7 +50,7 @@ export default [{
 }, {
   method: 'GET',
   path: '/v1/block/{blockNumber}/transactions',
-  handler: getTransactionsByBlock,
+  handler: handlers.getTransactionsByBlock,
   options: {
     id: 'v1.block.getTransactionsByBlock',
     tags: ['api', 'block'],

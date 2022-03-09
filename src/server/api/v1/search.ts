@@ -2,7 +2,7 @@ import { SmartContract, Transaction, Address, Block, Token } from '../../databas
 import { getSearchType, SearchFilter, SearchType } from '../../utils/search';
 import { convertHashToBuffer } from '../../utils/address';
 import { output } from '../../utils';
-import { Op } from 'sequelize';
+import { literal, Op } from 'sequelize';
 
 async function getBlock(query) {
   const hash = convertHashToBuffer(query);
@@ -13,7 +13,12 @@ async function getBlock(query) {
     where = { number: query }
   }
 
-  const searchResult = await Block.findOne({ where });
+  const searchResult = await Block.findOne({
+    where,
+    attributes: {
+      include: [[literal(`(SELECT COUNT(transactions.hash) FROM "transactions" WHERE "Block".hash = "transactions"."block_hash")`), 'transactionsCount']],
+    }
+  });
 
   const searchType = searchResult ? SearchType.Block : SearchType.None;
 
