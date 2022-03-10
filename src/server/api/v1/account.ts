@@ -39,7 +39,11 @@ export async function getAccountByAddress(r) {
   const addressTokenBalances = await AddressCurrentTokenBalance.findAll({
     attributes: {
       exclude: ['id', 'block_number', 'inserted_at', 'updated_at', 'old_value'],
-      include: [[literal('token.name'), 'name'], [literal('token.symbol'), 'symbol']]
+      include: [
+        [literal('token.name'), 'name'],
+        [literal('token.symbol'), 'symbol'],
+        [literal('token.decimals'), 'decimals']
+      ]
     },
     where: { address_hash: address },
     include: {

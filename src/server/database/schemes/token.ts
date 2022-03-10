@@ -79,7 +79,8 @@ export const shortTokenBalanceSchema = Joi.object({
   value: valueStringSchema,
   value_fetched_at: dateISOSchema,
   name: tokenNameSchema,
-  symbol: tokenSymbolSchema
+  symbol: tokenSymbolSchema,
+  decimals: smallStringValueSchema
 }).label('ShortTokenBalance');
 
 export const shortTokenBalanceArray = Joi.array().items(shortTokenBalanceSchema).label('ShortTokenBalanceArray');
