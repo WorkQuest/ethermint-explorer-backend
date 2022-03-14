@@ -103,7 +103,8 @@ export default [{
     validate: {
       params: Joi.object({
         address: Joi.string().required()
-      }).label('GetTokenHoldersParams')
+      }).label('GetTokenHoldersParams'),
+      query: paginationSchema
     },
     response: {
       schema: outputPaginationSchema('holders', tokenHolderSchema, 'GetTokenHoldersSchema')
