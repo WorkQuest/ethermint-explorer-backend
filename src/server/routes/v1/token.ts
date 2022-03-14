@@ -52,7 +52,7 @@ export default [{
       query: paginationSchema
     },
     response: {
-      schema: outputPaginationSchema('txs', tokenTransferSchema, 'GetTokenTransfersSchema')
+      schema: outputPaginationSchema('txs', shortTokenTransferSchema, 'GetTokenTransfersSchema')
         .label('GetTokenTransfersResponse')
     }
   }

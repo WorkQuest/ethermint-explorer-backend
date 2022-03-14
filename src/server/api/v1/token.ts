@@ -1,16 +1,22 @@
 import { convertHashToBuffer } from '../../utils/address';
 import { TokenTransfer, Token, AddressCurrentTokenBalance, Block, Address } from '../../database';
 import { output } from '../../utils';
-import { fn, literal, Op } from 'sequelize';
+import { Op } from 'sequelize';
 
 export async function getTokenTransfers(r) {
   const address = convertHashToBuffer(r.params.address);
 
   const { count, rows } = await TokenTransfer.findAndCountAll({
     where: { token_contract_address_hash: address },
+    attributes: ['transaction_hash', 'from_address_hash', 'to_address_hash', 'amount', 'token_contract_address_hash'],
+    include: {
+      model: Block,
+      as: 'block',
+      attributes: ['timestamp']
+    },
+    order: [['block_number', 'DESC']],
     limit: r.query.limit,
     offset: r.query.offset,
-    order: [['block_number', 'DESC']]
   });
 
   return output({ count, txs: rows });
