@@ -14,7 +14,8 @@ export const tokenTypeSchema = Joi.string().example('ERC-20');
 
 export const tokenInfoSchema = Joi.object({
   name: tokenNameSchema,
-  symbol: tokenSymbolSchema
+  symbol: tokenSymbolSchema,
+  decimals: smallStringValueSchema
 }).label('TokenInfo');
 
 export const tokenOnlyInfoHashSchema = Joi.object({

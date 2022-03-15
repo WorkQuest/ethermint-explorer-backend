@@ -111,7 +111,7 @@ export async function getAllTokenTransfers(r) {
       include: [{
         model: Token,
         as: 'token',
-        attributes: ['name', 'symbol']
+        attributes: ['name', 'symbol', 'decimals']
       }]
     }],
     order: [['block_number', 'DESC']],
