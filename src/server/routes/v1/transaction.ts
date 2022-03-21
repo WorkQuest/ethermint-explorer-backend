@@ -5,7 +5,7 @@ import {
   shortInternalTransactionSchema,
   shortTransactionSchema,
   shortTransactionWithTransfersSchema,
-  transactionSchema
+  transactionSchema, transactionWithTokenSchema
 } from '../../database/schemes/transaction';
 
 export default [{
@@ -86,6 +86,28 @@ export default [{
         shortInternalTransactionSchema,
         'GetAccountInternalTransactionsSchema'
       ).label('GetAccountInternalTransactionResponse')
+    }
+  }
+}, {
+  method: 'GET',
+  path: '/v1/account/{address}/token-transactions',
+  handler: handlers.getTransactionsWithTokens,
+  options: {
+    id: 'v1.account.getTransactionsWithTokens',
+    tags: ['api', 'transaction'],
+    description: 'Get account transactions with tokens',
+    validate: {
+      params: Joi.object({
+        address: Joi.string().required()
+      }).label('GetAccountTransactionsWithTokensParams'),
+      query: paginationSchema,
+    },
+    response: {
+      schema: outputPaginationSchema(
+        'transactions',
+        transactionWithTokenSchema,
+        'GetTransactionsWithTokensSchema'
+      ).label('GetTransactionsWithTokensResponse')
     }
   }
 }];

@@ -150,3 +150,49 @@ export async function getAccountInternalTransactions(r) {
 
   return output({ count, transactions: rows });
 }
+
+export async function getTransactionsWithTokens(r) {
+  const address = convertHashToBuffer(r.params.address);
+
+  const { rows, count } = await Transaction.findAndCountAll({
+    attributes: [
+      'gas',
+      'hash',
+      'error',
+      'value',
+      'status',
+      'gas_used',
+      'gas_price',
+      'block_number',
+      'to_address_hash',
+      'from_address_hash',
+    ],
+    include: [{
+      model: TokenTransfer,
+      as: 'tokenTransfers',
+      required: true,
+      where: {
+        [Op.or]: {
+          to_address_hash: address,
+          from_address_hash: address
+        }
+      },
+      attributes: ['token_contract_address_hash'],
+      include: [{
+        model: Address,
+        as: 'tokenContractAddress',
+        attributes: ['hash'],
+        include: [{
+          model: Token,
+          as: 'token',
+          attributes: ['name', 'decimals', 'symbol']
+        }]
+      }]
+    }],
+    order: [['block_number', 'DESC']],
+    limit: r.query.limit,
+    offset: r.query.offset
+  });
+
+  return output({ transactions: rows, count });
+}

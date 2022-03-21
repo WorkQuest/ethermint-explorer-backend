@@ -54,6 +54,12 @@ export async function getAccountByAddress(r) {
     order: [['block_number', 'DESC']]
   });
 
+  const createdContract = await Transaction.findOne({
+    where: { created_contract_address_hash: address },
+    attributes: ['from_address_hash', 'hash']
+  });
+
+  account.setDataValue('createdContract', createdContract);
   account.setDataValue('addressCoinBalance', addressCoinBalance);
   account.setDataValue('addressTokensBalances', addressTokenBalances);
 
@@ -153,7 +159,7 @@ export async function getAccountByAddress(r) {
     }],
     order: [['block_number', 'DESC']],
     limit: r.query.commonLimit
-  })
+  });
 
   const tokenTransfersList = await TokenTransfer.findAndCountAll({
     attributes: [
