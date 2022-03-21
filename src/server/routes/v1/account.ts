@@ -4,7 +4,11 @@ import { accountSchema } from '../../database/schemes/account';
 import { logSchema } from '../../database/schemes/logs';
 import { shortTokenTransferSchema } from '../../database/schemes/token';
 import { getPaginationBySchema, outputOkSchema, paginationSchema } from '../../database/schemes';
-import { shortInternalTransactionSchema, shortTransactionSchema } from '../../database/schemes/transaction';
+import {
+  shortInternalTransactionSchema,
+  shortTransactionSchema,
+  transactionWithTokenSchema
+} from '../../database/schemes/transaction';
 
 export default [{
   method: 'GET',
@@ -29,7 +33,8 @@ export default [{
           transactionsList: getPaginationBySchema(shortTransactionSchema),
           addressLogsList: getPaginationBySchema(logSchema),
           tokenTransfersList: getPaginationBySchema(shortTokenTransferSchema),
-          internalTransactionsList: getPaginationBySchema(shortInternalTransactionSchema)
+          internalTransactionsList: getPaginationBySchema(shortInternalTransactionSchema),
+          transactionWithTokensList: getPaginationBySchema(transactionWithTokenSchema),
         }).label('FullAccountSchema')
       ).label('GetAccountByAddressResponse'),
     }

@@ -1,7 +1,7 @@
 import * as Joi from 'joi';
 import { logArray } from './logs';
 import { shortAccountSchema } from './account';
-import { tokenTransferOnlyAmountArray } from './token';
+import { tokenOnlyInfoHashSchema, tokenTransferOnlyAmountArray } from './token';
 import { blockSchema, blockTimestampSchema } from './block';
 import {
   hashSchema,
@@ -119,5 +119,22 @@ export const rawTransactionSchema = Joi.object({
   max_fee_per_gas: smallStringValueSchema,
   type: Joi.number().example(1),
 }).label('RawTransaction')
+
+export const transactionWithTokenSchema = Joi.object({
+  hash: hashSchema,
+  from_address_hash: addressSchema,
+  to_address_hash: addressSchema,
+  gas: valueStringSchema,
+  error: Joi.string(),
+  value: valueStringSchema,
+  status: Joi.number().example(1),
+  gas_used: valueStringSchema,
+  gas_price: smallStringValueSchema,
+  block_number: blockNumberNumberSchema,
+  tokenTransfers: Joi.object({
+    token_contract_address_hash: addressSchema,
+    tokenContractAddress: tokenOnlyInfoHashSchema
+  }).label('TransactionTokenTransfersOnlyTokenInfo')
+}).label('TransactionWithTokens');
 
 export const rawTransactionArray = Joi.array().items(rawTransactionSchema).label('RawTransactionArray');
