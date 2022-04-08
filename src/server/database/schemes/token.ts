@@ -35,6 +35,8 @@ export const tokenSchema = Joi.object({
   holder_count: smallNumberValueSchema,
   bridged: Joi.boolean(),
   skip_metadata: Joi.boolean(),
+  volume: valueStringSchema,
+  circulatingSupply: valueStringSchema,
 }).label('Token');
 
 export const tokenTransferSchema = Joi.object({

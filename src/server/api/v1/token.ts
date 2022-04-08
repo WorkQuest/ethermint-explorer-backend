@@ -1,7 +1,9 @@
 import { convertHashToBuffer } from '../../utils/address';
 import { TokenTransfer, Token, AddressCurrentTokenBalance, Block, Address } from '../../database';
 import { output } from '../../utils';
-import { Op } from 'sequelize';
+import { col, Op, fn, literal } from 'sequelize';
+import moment from 'moment';
+import BigNumber from 'bignumber.js';
 
 export async function getTokenTransfers(r) {
   const address = convertHashToBuffer(r.params.address);
@@ -47,6 +49,30 @@ export async function getAccountTokenTransfers(r) {
 export async function getToken(r) {
   const address = convertHashToBuffer(r.params.address);
   const token = await Token.findByPk(address);
+
+  const fromBlock = await Block.findOne({
+    attributes: ['number'],
+    where: {
+      timestamp: { [Op.gte]: moment().utc().subtract(24, 'h').toDate() }
+    },
+    order: [['timestamp', 'ASC']]
+  });
+
+  const volume = await TokenTransfer.findOne({
+    attributes: [[fn('SUM', col('amount')), 'amount']],
+    where: {
+      block_number: { [Op.gte]: fromBlock.number },
+      token_contract_address_hash: address
+    }
+  });
+
+  const circulatingSupply = await AddressCurrentTokenBalance.findOne({
+    attributes: [[fn('SUM', col('value')), 'value']],
+    where: { token_contract_address_hash: address }
+  });
+
+  token.setDataValue('volume', volume.amount);
+  token.setDataValue('circulatingSupply', circulatingSupply.value);
 
   const transfersList = await TokenTransfer.findAndCountAll({
     where: { token_contract_address_hash: address },
