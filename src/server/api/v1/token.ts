@@ -110,8 +110,6 @@ export async function getTokenHolders(r) {
   const address = convertHashToBuffer(r.params.address);
   const { count, rows } = await AddressCurrentTokenBalance.findAndCountAll({
     where: {
-      // @ts-ignore
-      // address_hash: { [Op.ne]: address },
       token_contract_address_hash: address,
     },
     attributes: ['address_hash', 'value', 'value_fetched_at'],
