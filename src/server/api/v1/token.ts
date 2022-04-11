@@ -63,7 +63,7 @@ export async function getToken(r) {
   const holdersList = await AddressCurrentTokenBalance.findAndCountAll({
     where: { token_contract_address_hash: address },
     attributes: ['address_hash', 'value', 'value_fetched_at'],
-    order: [['value_fetched_at', 'DESC']],
+    order: [['value', 'DESC']],
     limit: r.query.commonLimit,
   });
 
