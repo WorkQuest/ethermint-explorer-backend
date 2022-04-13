@@ -4,10 +4,15 @@ import { shortTransactionSchema } from '../../database/schemes/transaction';
 import {
   outputOkSchema,
   outputPaginationSchema,
-  paginationSchema,
+  paginationFields,
   smallStringValueSchema
 } from '../../database/schemes';
 import * as Joi from 'joi'
+import {
+  getBlocksSortSchema,
+  getSortBySchema,
+  getTransactionsSortSchema,
+} from '../../database/schemes/sort';
 
 export default [{
   method: 'GET',
@@ -18,7 +23,10 @@ export default [{
     tags: ['api', 'block'],
     description: 'Get all blocks',
     validate: {
-      query: paginationSchema
+      query: Joi.object({
+        ...paginationFields,
+        sort: getSortBySchema(getBlocksSortSchema, 'number')
+      }).label('GetBlockQuery')
     },
     response: {
       schema: outputPaginationSchema(
@@ -59,7 +67,10 @@ export default [{
       params: Joi.object({
         blockNumber: Joi.string().required()
       }).label('GetTransactionsByBlockParams'),
-      query: paginationSchema
+      query: Joi.object({
+        ...paginationFields,
+        sort: getSortBySchema(getTransactionsSortSchema, 'block_number'),
+      }).label('GetTransactionByBlockQuery')
     },
     response: {
       schema: outputPaginationSchema('transactions', shortTransactionSchema, 'GetTransactionsByBlockSchema')

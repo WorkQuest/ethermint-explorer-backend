@@ -1,9 +1,8 @@
 import { convertHashToBuffer } from '../../utils/address';
 import { TokenTransfer, Token, AddressCurrentTokenBalance, Block, Address } from '../../database';
-import { output } from '../../utils';
-import { col, Op, fn, literal } from 'sequelize';
+import { getSort, output } from '../../utils';
+import { col, Op, fn } from 'sequelize';
 import moment from 'moment';
-import BigNumber from 'bignumber.js';
 import { TokenMetaData } from '../../database/models/TokenMetaData';
 
 export async function getTokenTransfers(r) {
@@ -17,7 +16,7 @@ export async function getTokenTransfers(r) {
       as: 'block',
       attributes: ['timestamp']
     },
-    order: [['block_number', 'DESC']],
+    order: getSort(r.query),
     limit: r.query.limit,
     offset: r.query.offset,
   });
@@ -41,7 +40,7 @@ export async function getAccountTokenTransfers(r) {
     },
     limit: r.query.limit,
     offset: r.query.offset,
-    order: [['block_number', 'DESC']]
+    order: getSort(r.query)
   });
 
   return output({ count, txs: rows });
@@ -112,7 +111,7 @@ export async function getTokens(r) {
       as: 'metadata',
       attributes: ['iconUrl', 'description']
     }],
-    order: [['holder_count', 'DESC']],
+    order: getSort(r.query),
   });
 
   return output({ tokens: rows, count });
@@ -125,7 +124,7 @@ export async function getTokenHolders(r) {
       token_contract_address_hash: address,
     },
     attributes: ['address_hash', 'value', 'value_fetched_at'],
-    order: [['value', 'DESC']],
+    order: getSort(r.query),
     limit: r.query.limit,
     offset: r.query.offset
   });
@@ -150,7 +149,7 @@ export async function getAllTokenTransfers(r) {
         attributes: ['name', 'symbol', 'decimals']
       }]
     }],
-    order: [['block_number', 'DESC']],
+    order: getSort(r.query),
     limit: r.query.limit,
     offset: r.query.offset,
   });

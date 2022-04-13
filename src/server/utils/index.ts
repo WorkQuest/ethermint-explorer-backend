@@ -1,6 +1,9 @@
 import { v4 as uuidv4, } from 'uuid';
 import { Boom, } from '@hapi/boom';
 import * as speakeasy from 'speakeasy';
+import { literal } from 'sequelize';
+import { Literal } from 'sequelize/types/lib/utils';
+import { sortTypeSchema } from '../database/schemes/sort';
 
 export const nullAddress = '0x0000000000000000000000000000000000000000';
 
@@ -89,4 +92,8 @@ export async function handleValidationError(r, h, err) {
     'Validation error',
     err.details.map((e) => ({ field: e.context.key, reason: e.type.replace('any.', ''), }))
   );
+}
+
+export function getSort(query: { sort: { field: string, type: 'ASC' | 'DESC' } }): Literal {
+  return literal(`${query.sort.field} ${query.sort.type}`);
 }

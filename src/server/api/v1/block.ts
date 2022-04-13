@@ -1,5 +1,5 @@
 import { Transaction, Block } from '../../database';
-import { error, output } from '../../utils';
+import { error, getSort, output } from '../../utils';
 import { Errors } from '../../utils/errors';
 import { col, fn, literal } from 'sequelize';
 
@@ -11,7 +11,7 @@ export async function getBlocks(r) {
     },
     limit: r.query.limit,
     offset: r.query.offset,
-    order: [['timestamp', 'DESC']]
+    order: getSort(r.query),
   });
 
   return output({ count, blocks: rows })
@@ -52,6 +52,7 @@ export async function getTransactionsByBlock(r) {
       model: Block,
       attributes: ['timestamp'],
     }],
+    order: getSort(r.query),
     limit: r.query.limit,
     offset: r.query.offset
   });

@@ -1,12 +1,13 @@
 import * as Joi from 'joi';
 import * as handlers from '../../api/v1/transaction';
-import { outputOkSchema, outputPaginationSchema, paginationSchema } from '../../database/schemes';
+import { outputOkSchema, outputPaginationSchema, paginationFields, paginationSchema } from '../../database/schemes';
 import {
   shortInternalTransactionSchema,
   shortTransactionSchema,
   shortTransactionWithTransfersSchema,
   transactionSchema, transactionWithTokenSchema
 } from '../../database/schemes/transaction';
+import { getHoldersSort, getSortBySchema, getTransactionsSortSchema } from '../../database/schemes/sort';
 
 export default [{
   method: 'GET',
@@ -17,7 +18,10 @@ export default [{
     tags: ['api', 'transaction'],
     description: 'Get all Transactions',
     validate: {
-      query: paginationSchema
+      query: Joi.object({
+        ...paginationFields,
+        sort: getSortBySchema(getTransactionsSortSchema, 'block_number')
+      }).label('GetAllTransactionsQuery'),
     },
     response: {
       schema: outputPaginationSchema(
@@ -56,7 +60,10 @@ export default [{
       params: Joi.object({
         address: Joi.string().required()
       }).label('GetAccountTransactionsParams'),
-      query: paginationSchema,
+      query: Joi.object({
+        ...paginationFields,
+        sort: getSortBySchema(getTransactionsSortSchema, 'block_number')
+      }).label('GetAccountTransactionsQuery'),
     },
     response: {
       schema: outputPaginationSchema(
@@ -78,7 +85,10 @@ export default [{
       params: Joi.object({
         address: Joi.string().required()
       }).label('GetAccountInternalTransactionsParams'),
-      query: paginationSchema,
+      query: Joi.object({
+        ...paginationFields,
+        sort: getSortBySchema(getTransactionsSortSchema, 'block_number')
+      }).label('GetAccountInternalTransactionQuery'),
     },
     response: {
       schema: outputPaginationSchema(
@@ -100,7 +110,10 @@ export default [{
       params: Joi.object({
         address: Joi.string().required()
       }).label('GetAccountTransactionsWithTokensParams'),
-      query: paginationSchema,
+      query: Joi.object({
+        ...paginationFields,
+        sort: getSortBySchema(getTransactionsSortSchema, 'block_number')
+      }).label('GetTransactionsWithTokensQuery'),
     },
     response: {
       schema: outputPaginationSchema(

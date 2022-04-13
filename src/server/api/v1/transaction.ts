@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import { error, output } from '../../utils';
+import { error, getSort, output } from '../../utils';
 import { Errors } from '../../utils/errors';
 import { convertHashToBuffer } from '../../utils/address';
 import {
@@ -33,7 +33,7 @@ export async function getAllTransactions(r) {
     }],
     limit: r.query.limit,
     offset: r.query.offset,
-    order: [['block_number', 'DESC']],
+    order: getSort(r.query),
   });
 
   return output({ count, transactions: rows });
@@ -115,7 +115,7 @@ export async function getAccountTransactions(r) {
     }],
     limit: r.query.limit,
     offset: r.query.offset,
-    order: [['block_number', 'DESC']],
+    order: getSort(r.query),
   });
 
   return output({ count, transactions: rows });
@@ -145,7 +145,7 @@ export async function getAccountInternalTransactions(r) {
     },
     limit: r.query.limit,
     offset: r.query.offset,
-    order: [['block_number', 'DESC']],
+    order: getSort(r.query),
   });
 
   return output({ count, transactions: rows });
@@ -189,7 +189,7 @@ export async function getTransactionsWithTokens(r) {
         }]
       }]
     }],
-    order: [['block_number', 'DESC']],
+    order: getSort(r.query),
     limit: r.query.limit,
     offset: r.query.offset
   });

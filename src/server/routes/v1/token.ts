@@ -2,8 +2,8 @@ import * as handlers from '../../api/v1/token';
 import {
   getPaginationBySchema,
   outputOkSchema,
-  outputPaginationSchema,
-  paginationSchema,
+  outputPaginationSchema, paginationFields,
+  paginationSchema
 } from '../../database/schemes';
 import * as Joi from 'joi';
 import {
@@ -12,6 +12,12 @@ import {
   tokenSchema,
   tokenTransferSchema, tokenTransferWithTokenSchema, tokenWithMetadataSchema
 } from '../../database/schemes/token';
+import {
+  getHoldersSort,
+  getSortBySchema,
+  getTokensSortSchema,
+  getTokenTransfersSortSchema
+} from '../../database/schemes/sort';
 
 export default [{
   method: 'GET',
@@ -49,7 +55,10 @@ export default [{
       params: Joi.object({
         address: Joi.string().required()
       }).label('GetAccountByAddressParams'),
-      query: paginationSchema
+      query: Joi.object({
+        ...paginationFields,
+        sort: getSortBySchema(getTokenTransfersSortSchema, 'block_number')
+      }).label('GetTokenTransfersQuery')
     },
     response: {
       schema: outputPaginationSchema('txs', shortTokenTransferSchema, 'GetTokenTransfersSchema')
@@ -69,7 +78,10 @@ export default [{
         accountAddress: Joi.string().required(),
         tokenAddress: Joi.string().required()
       }).label('GetAccountTokenTransfersParams'),
-      query: paginationSchema
+      query: Joi.object({
+        ...paginationFields,
+        sort: getSortBySchema(getTokenTransfersSortSchema, 'block_number')
+      }).label('GetAccountTokenTransfersQuery'),
     },
     response: {
       schema: outputPaginationSchema('txs', tokenTransferSchema, 'GetAccountTokenTransfersSchema')
@@ -85,7 +97,10 @@ export default [{
     tags: ['api', 'token'],
     description: 'Get tokens list',
     validate: {
-      query: paginationSchema
+      query: Joi.object({
+        ...paginationFields,
+        sort: getSortBySchema(getTokensSortSchema, 'holder_count')
+      }).label('GetTokensQuery'),
     },
     response: {
       schema: outputPaginationSchema('tokens', tokenWithMetadataSchema, 'GetTokensSchema')
@@ -104,7 +119,10 @@ export default [{
       params: Joi.object({
         address: Joi.string().required()
       }).label('GetTokenHoldersParams'),
-      query: paginationSchema
+      query: Joi.object({
+        ...paginationFields,
+        sort: getSortBySchema(getHoldersSort, 'value')
+      }).label('GetTokenHoldersQuery'),
     },
     response: {
       schema: outputPaginationSchema('holders', tokenHolderSchema, 'GetTokenHoldersSchema')
@@ -120,7 +138,10 @@ export default [{
     tags: ['api', 'token'],
     description: 'Get all token transfers',
     validate: {
-      query: paginationSchema
+      query: Joi.object({
+        ...paginationFields,
+        sort: getSortBySchema(getTokenTransfersSortSchema, 'block_number')
+      }).label('GetAllTokenTransfersQuery'),
     },
     response: {
       schema: outputPaginationSchema('transfers', tokenTransferWithTokenSchema, 'GetAllTokenTransfersSchema')
