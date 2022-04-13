@@ -23,6 +23,11 @@ export const tokenOnlyInfoHashSchema = Joi.object({
   token: tokenInfoSchema
 }).label('TokenInfoHash');
 
+export const tokenMetadataSchema = Joi.object({
+  iconUrl: Joi.string().example('https://workquest-cdn.fra1.digitaloceanspaces.com/iSROK3hdtt0mZlzWpS3uOoMorqS2oH4zqjCaYv7fa1tLbqG2AmXxkzhySN8F'),
+  description: Joi.string().example('Management of WorkQuest DAO & Collateral for WUSD. Used for referral program & available for a liquidity mining'),
+}).label('TokenMetadata');
+
 export const tokenSchema = Joi.object({
   contract_address_hash: addressSchema,
   name: tokenNameSchema,
@@ -38,6 +43,10 @@ export const tokenSchema = Joi.object({
   volume: valueStringSchema,
   circulatingSupply: valueStringSchema,
 }).label('Token');
+
+export const tokenWithMetadataSchema = tokenSchema.keys({
+  metadata: tokenMetadataSchema
+}).label('TokenWithMetadata');
 
 export const tokenTransferSchema = Joi.object({
   transaction_hash: hashSchema,

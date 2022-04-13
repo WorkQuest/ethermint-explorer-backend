@@ -32,6 +32,7 @@ import { Block } from './models/Block';
 import config from '../config/config';
 import { User } from './models/User';
 import { Logs } from './models/Logs';
+import { TokenMetaData } from './models/TokenMetaData';
 
 export async function initDatabase(){
   const sequelize = new Sequelize(config.dbLink, {
@@ -53,6 +54,7 @@ export async function initDatabase(){
       SchemaMigration,
       ContractMethod,
       EmissionReward,
+      TokenMetaData,
       TokenInstance,
       SmartContract,
       TokenTransfer,

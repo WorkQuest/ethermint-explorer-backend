@@ -4,6 +4,7 @@ import { output } from '../../utils';
 import { col, Op, fn, literal } from 'sequelize';
 import moment from 'moment';
 import BigNumber from 'bignumber.js';
+import { TokenMetaData } from '../../database/models/TokenMetaData';
 
 export async function getTokenTransfers(r) {
   const address = convertHashToBuffer(r.params.address);
@@ -48,7 +49,13 @@ export async function getAccountTokenTransfers(r) {
 
 export async function getToken(r) {
   const address = convertHashToBuffer(r.params.address);
-  const token = await Token.findByPk(address);
+  const token = await Token.findByPk(address, {
+    include: {
+      model: TokenMetaData,
+      as: 'metadata',
+      attributes: ['iconUrl', 'description']
+    }
+  });
 
   const fromBlock = await Block.findOne({
     attributes: ['number'],

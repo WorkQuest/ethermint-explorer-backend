@@ -10,7 +10,7 @@ import {
   shortTokenTransferSchema,
   tokenHolderSchema,
   tokenSchema,
-  tokenTransferSchema, tokenTransferWithTokenSchema
+  tokenTransferSchema, tokenTransferWithTokenSchema, tokenWithMetadataSchema
 } from '../../database/schemes/token';
 
 export default [{
@@ -31,7 +31,7 @@ export default [{
     },
     response: {
       schema: outputOkSchema(Joi.object({
-        token: tokenSchema,
+        token: tokenWithMetadataSchema,
         transfersList: getPaginationBySchema(shortTokenTransferSchema),
         holdersList: getPaginationBySchema(tokenHolderSchema)
       })).label('GetTokenResponse')
