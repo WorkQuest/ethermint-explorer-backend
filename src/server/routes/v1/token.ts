@@ -88,7 +88,7 @@ export default [{
       query: paginationSchema
     },
     response: {
-      schema: outputPaginationSchema('tokens', tokenSchema, 'GetTokensSchema')
+      schema: outputPaginationSchema('tokens', tokenWithMetadataSchema, 'GetTokensSchema')
         .label('GetTokensResponse')
     }
   }

@@ -107,6 +107,11 @@ export async function getTokens(r) {
   const { rows, count } = await Token.findAndCountAll({
     limit: r.query.limit,
     offset: r.query.offset,
+    include: [{
+      model: TokenMetaData,
+      as: 'metadata',
+      attributes: ['iconUrl', 'description']
+    }],
     order: [['holder_count', 'DESC']],
   });
 
