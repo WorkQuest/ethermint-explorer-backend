@@ -162,6 +162,10 @@ export async function getAccountByAddress(r) {
           attributes: ['name', 'decimals', 'symbol']
         }]
       }]
+    }, {
+      model: Block,
+      as: 'block',
+      attributes: ['timestamp']
     }],
     order: [['block_number', 'DESC']],
     limit: r.query.commonLimit
