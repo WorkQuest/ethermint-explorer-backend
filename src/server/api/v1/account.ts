@@ -13,6 +13,7 @@ import {
   Token,
   Logs,
 } from '../../database';
+import { TokenMetaData } from '../../database/models/TokenMetaData';
 
 export async function getAccountByAddress(r) {
   const { commonLimit } = r.query;
@@ -49,7 +50,12 @@ export async function getAccountByAddress(r) {
     include: {
       model: Token,
       as: 'token',
-      attributes: []
+      attributes: ['name'],
+      include: [{
+        model: TokenMetaData,
+        as: 'metadata',
+        attributes: ['iconUrl', 'description']
+      }]
     },
     order: [['block_number', 'DESC']]
   });
