@@ -104,10 +104,11 @@ export async function getAccountTransactions(r) {
         from_address_hash: address,
       },
     },
+    subQuery: false,
     include: [{
       as: 'block',
       model: Block,
-      attributes: ['timestamp']
+      attributes: ['timestamp'],
     }, {
       as: 'tokenTransfers',
       model: TokenTransfer,
