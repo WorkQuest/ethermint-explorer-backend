@@ -4,15 +4,16 @@ export const enum SearchType {
   BlockOrTx,
   Contract,
   Address,
-  Tokens,
+  TokenName,
   Token,
   None
 }
 
 export const enum SearchFilter {
-  Addresses = 0,
-  Tokens,
-  TokenName
+  Address = 0,
+  TransactionHash,
+  Block,
+  Token
 }
 
 export function getSearchType(query: string): SearchType {
@@ -21,7 +22,7 @@ export function getSearchType(query: string): SearchType {
   }
 
   if (!query.startsWith('0x') && !query.startsWith('wq1')) {
-    return SearchType.Tokens;
+    return SearchType.TokenName;
   }
 
   if (query.length === 42 || query.length === 41) {

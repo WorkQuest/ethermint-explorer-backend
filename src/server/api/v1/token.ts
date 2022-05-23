@@ -64,20 +64,25 @@ export async function getToken(r) {
     order: [['timestamp', 'ASC']]
   });
 
-  const volume = await TokenTransfer.findOne({
-    attributes: [[fn('SUM', col('amount')), 'amount']],
-    where: {
-      block_number: { [Op.gte]: fromBlock.number },
-      token_contract_address_hash: address
-    }
-  });
+  if (fromBlock) {
+    const volume = await TokenTransfer.findOne({
+      attributes: [[fn('SUM', col('amount')), 'amount']],
+      where: {
+        block_number: { [Op.gte]: fromBlock.number },
+        token_contract_address_hash: address
+      }
+    });
+
+    token.setDataValue('volume', volume.amount);
+  } else {
+    token.setDataValue('volume', '0');
+  }
 
   const circulatingSupply = await AddressCurrentTokenBalance.findOne({
     attributes: [[fn('SUM', col('value')), 'value']],
     where: { token_contract_address_hash: address }
   });
 
-  token.setDataValue('volume', volume.amount);
   token.setDataValue('circulatingSupply', circulatingSupply.value);
 
   const transfersList = await TokenTransfer.findAndCountAll({

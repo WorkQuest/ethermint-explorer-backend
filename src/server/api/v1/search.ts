@@ -1,4 +1,4 @@
-import { SmartContract, Transaction, Address, Block, Token } from '../../database';
+import { Address, Block, SmartContract, Token, Transaction } from '../../database';
 import { getSearchType, SearchFilter, SearchType } from '../../utils/search';
 import { convertHashToBuffer } from '../../utils/address';
 import { output } from '../../utils';
@@ -66,7 +66,7 @@ async function getAddress(query, extraParams = false) {
   return { searchResult, searchType: SearchType.Address };
 }
 
-async function getTokens(query) {
+async function getTokenByName(query) {
   const searchResult = await Address.findAndCountAll({
     include: [{
       model: Token,
@@ -84,10 +84,10 @@ async function getTokens(query) {
     }]
   });
 
-  return { searchResult, searchType: SearchType.Tokens };
+  return { searchResult, searchType: SearchType.TokenName };
 }
 
-async function searchByType(type: SearchType, q: string, extraParams?: any) {
+async function autodetectSearch(type: SearchType, q: string, extraParams?: any) {
   if (type === SearchType.Block) {
     const result = await getBlock(q);
 
@@ -101,8 +101,8 @@ async function searchByType(type: SearchType, q: string, extraParams?: any) {
     return blockResult.searchType === SearchType.None ? txResult : blockResult;
   }
 
-  if (type === SearchType.Tokens) {
-    const result = await getTokens(q);
+  if (type === SearchType.TokenName) {
+    const result = await getTokenByName(q);
 
     return result;
   }
@@ -120,29 +120,36 @@ export async function search(r) {
   const { q } = r.query;
   const type = getSearchType(q);
 
-  if (r.query.type !== undefined) {
-    const { type } = r.query;
-
-    if (type === SearchFilter.Addresses) {
-      const result = await searchByType(SearchType.Address, q);
+  switch (r.query.type) {
+    case SearchFilter.Address: {
+      const result = await getAddress(q)
 
       return output(result);
     }
 
-    if (type === SearchFilter.Tokens) {
-      const result = await searchByType(SearchType.Address, q, true);
+    case SearchFilter.TransactionHash: {
+      const result = await getTransaction(q);
 
       return output(result);
     }
 
-    if (type === SearchFilter.TokenName) {
-      const result = await searchByType(SearchType.Tokens, q);
+    case SearchFilter.Block: {
+      const result = await getBlock(q);
 
       return output(result);
     }
 
-    return { searchResult: null, searchType: type };
+    case SearchFilter.Token: {
+      const result = type === SearchType.TokenName ?
+        await getTokenByName(q) : await getAddress(q, true);
+
+      return output(result);
+    }
+
+    default: {
+      const result = await autodetectSearch(type, q);
+
+      return output(result);
+    }
   }
-
-  return output(await searchByType(type, q));
 }
