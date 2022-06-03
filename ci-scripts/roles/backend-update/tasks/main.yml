@@ -27,7 +27,8 @@
   npm:
     name: typescript
     global: yes
-
+  become: yes
+  
 - name: Install packages based on package.json
   npm:
     path: '{{ backend_bin }}'
