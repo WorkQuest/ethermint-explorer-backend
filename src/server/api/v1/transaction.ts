@@ -71,7 +71,7 @@ export async function getTransactionByHash(r) {
       }]
     }, {
       model: Logs,
-      as: 'logs'
+      as: 'logs',
     }]
   });
 
