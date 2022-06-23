@@ -3,7 +3,8 @@ import config from './config';
 export default {
   pathPrefixSize: 2,
   basePath: '/api/',
-  host: `${config.server.host}:${config.server.port}`,
+  host: config.server.local ? 'localhost:3000' : config.server.baseUrl.replace('https://', ''),
+  schemes: ['https', 'http'],
   grouping: 'tags',
   info: {
     title: 'API Documentation',

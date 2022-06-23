@@ -1,7 +1,7 @@
 {
   "apps": [
     {
-      "name": "explorer-backend",
+      "name": "dev-explorer-backend",
       "exec_mode": "fork",
       "instances": "1",
       "script": "./build/main.js",
@@ -10,14 +10,6 @@
       "env": {
         "ENV": "prod"
       }
-    },
-    {
-      "name": "explorer-indexer",
-      "exec_mode": "fork",
-      "instances": "1",
-      "script": "./build/indexer/index.js",
-      "autorestart": true,
-      "listen_timeout": 15000
     }
   ]
 }

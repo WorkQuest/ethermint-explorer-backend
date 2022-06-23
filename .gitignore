@@ -27,4 +27,7 @@ build/
 # lol macs
 .DS_Store/
 
+# ide
+.idea
+
 package-lock.json

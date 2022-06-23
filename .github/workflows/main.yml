@@ -2,7 +2,7 @@ name: Node-CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, develop ]
 
 jobs:
   build:
@@ -28,7 +28,17 @@ jobs:
   deploy-prod:
     environment: production
     if: "github.ref == 'refs/heads/master'"
-    runs-on: ubuntu-latest
+            DB_LINK=${{ secrets.DB_LINK }} \
+            SERVER_HOST=${{ secrets.SERVER_HOST }} \
+            SERVER_PORT=${{ secrets.SERVER_PORT }} \
+
+            BASE_URL=${{ secrets.BASE_URL }} \
+
+            LOCAL=${{ secrets.LOCAL }} \
+
+            backend_bin=${{ secrets.BACKEND_BIN }} \
+            SERVICE_NAME=${{ secrets.SERVICE_NAME }} \
+            SRC_DIR=${{ github.workspace }}/" backend-update.yml;
     needs: [build]
 
     steps:
@@ -59,9 +69,9 @@ jobs:
 
             LOCAL=${{ secrets.LOCAL }} \
 
-            RPC_URL=${{ secrets.RPC_URL }} \
-            WS_URL=${{ secrets.WS_URL }} \
-            DEFAULT_COIN=${{ secrets.DEFAULT_COIN }} \
+            backend_bin=${{ secrets.BACKEND_BIN }} \
+            SERVICE_NAME=${{ secrets.SERVICE_NAME }} \
+            SRC_DIR=${{ github.workspace }}/" backend-update.yml;
 
             backend_bin=${{ secrets.BACKEND_BIN }} \
 
@@ -142,10 +152,6 @@ jobs:
             BASE_URL=${{ secrets.BASE_URL }} \
 
             LOCAL=${{ secrets.LOCAL }} \
-
-            RPC_URL=${{ secrets.RPC_URL }} \
-            WS_URL=${{ secrets.WS_URL }} \
-            DEFAULT_COIN=${{ secrets.DEFAULT_COIN }} \
 
             backend_bin=${{ secrets.BACKEND_BIN }} \
             SERVICE_NAME=${{ secrets.SERVICE_NAME }} \

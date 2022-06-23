@@ -3,9 +3,7 @@ import * as Nes from '@hapi/nes';
 import * as Inert from '@hapi/inert';
 import * as Vision from '@hapi/vision';
 import * as Pino from 'hapi-pino';
-import * as Basic from '@hapi/basic';
 import * as HapiCors from 'hapi-cors';
-import * as HapiBearer from 'hapi-auth-bearer-token';
 import * as HapiPulse from 'hapi-pulse';
 import * as Qs from 'qs';
 import routes from './routes';
@@ -13,8 +11,7 @@ import config from './config/config';
 import { handleValidationError, responseHandler, } from './utils';
 import SwaggerOptions from './config/swagger';
 import { pinoConfig, } from './config/pino';
-import { run } from 'graphile-worker';
-import { initDatabase } from './models';
+import { initDatabase } from './database';
 
 const HapiSwagger = require('hapi-swagger');
 const Package = require('../../package.json');
@@ -51,12 +48,6 @@ const init = async () => {
     { plugin: HapiSwagger, options: SwaggerOptions, }
   ]);
   server.app.db = await initDatabase();
-  server.app.runner = await run({
-    connectionString: config.dbLink,
-    concurrency: 5,
-    pollInterval: 1000,
-    taskDirectory: `${__dirname}/jobs`
-  });
 
   // Загружаем маршруты
   server.route(routes);
