@@ -51,17 +51,17 @@ jobs:
           chmod 700 ci-scripts
           cd ci-scripts
           ansible-playbook -i "${{ secrets.REMOTE_HOST }}" -e "ansible_user=${{ secrets.REMOTE_USER }} \
-            DB_LINK=${{ secrets.PROD_DB_LINK }} \
-            SERVER_HOST=${{ secrets.PROD_SERVER_HOST }} \
-            SERVER_PORT=${{ secrets.PROD_SERVER_PORT }} \
+            DB_LINK=${{ secrets.DB_LINK }} \
+            SERVER_HOST=${{ secrets.SERVER_HOST }} \
+            SERVER_PORT=${{ secrets.SERVER_PORT }} \
 
-            BASE_URL=${{ secrets.PROD_BASE_URL }} \
+            BASE_URL=${{ secrets.BASE_URL }} \
 
-            LOCAL=${{ secrets.PROD_LOCAL }} \
+            LOCAL=${{ secrets.LOCAL }} \
 
-            RPC_URL=${{ secrets.PROD_RPC_URL }} \
-            WS_URL=${{ secrets.PROD_WS_URL }} \
-            DEFAULT_COIN=${{ secrets.PROD_DEFAULT_COIN }} \
+            RPC_URL=${{ secrets.RPC_URL }} \
+            WS_URL=${{ secrets.WS_URL }} \
+            DEFAULT_COIN=${{ secrets.DEFAULT_COIN }} \
 
             backend_bin=${{ secrets.BACKEND_BIN }} \
 
