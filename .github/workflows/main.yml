@@ -25,14 +25,15 @@ jobs:
       - name: Run build task
         run: npm run build
 
-  deploy:
-    environment: develop
-    runs-on: ubuntu-18.04
+  deploy-prod:
+    environment: production
+    if: "github.ref == 'refs/heads/master'"
+    runs-on: ubuntu-latest
     needs: [build]
 
     steps:
       - name: Copy code files to container
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Environment preparation
         run: |
@@ -54,8 +55,98 @@ jobs:
             SERVER_HOST=${{ secrets.SERVER_HOST }} \
             SERVER_PORT=${{ secrets.SERVER_PORT }} \
 
+            BASE_URL=${{ secrets.BASE_URL }} \
+
+            LOCAL=${{ secrets.LOCAL }} \
+
             RPC_URL=${{ secrets.RPC_URL }} \
             WS_URL=${{ secrets.WS_URL }} \
             DEFAULT_COIN=${{ secrets.DEFAULT_COIN }} \
 
+            backend_bin=${{ secrets.BACKEND_BIN }} \
+
+            SRC_DIR=${{ github.workspace }}/" backend-update.yml;
+
+  deploy-dev:
+    environment: develop
+    if: "github.ref == 'refs/heads/develop'"
+    runs-on: ubuntu-latest
+    needs: [build]
+
+    steps:
+      - name: Copy code files to container
+        uses: actions/checkout@v3
+
+      - name: Environment preparation
+        run: |
+          mkdir -p ~/.ssh/
+          touch ~/.ssh/id_rsa
+          chmod -R go= ~/.ssh
+          chmod 600 ~/.ssh/id_rsa
+          echo "${{ secrets.SERVER_SSH_KEY }}" >> ~/.ssh/id_rsa
+          sudo apt-add-repository -y -u ppa:ansible/ansible
+          sudo apt-get install -y rsync
+          sudo apt-get install -y ansible
+
+      - name: Deploy to Server
+        run: |
+          chmod 700 ci-scripts
+          cd ci-scripts
+          ansible-playbook -i "${{ secrets.REMOTE_HOST }}" -e "ansible_user=${{ secrets.REMOTE_USER }} \
+            DB_LINK=${{ secrets.DEV_DB_LINK }} \
+            SERVER_HOST=${{ secrets.DEV_SERVER_HOST }} \
+            SERVER_PORT=${{ secrets.DEV_SERVER_PORT }} \
+
+            BASE_URL=${{ secrets.DEV_BASE_URL }} \
+
+            LOCAL=${{ secrets.DEV_LOCAL }} \
+
+            RPC_URL=${{ secrets.DEV_RPC_URL }} \
+            WS_URL=${{ secrets.DEV_WS_URL }} \
+            DEFAULT_COIN=${{ secrets.DEV_DEFAULT_COIN }} \
+
+            backend_bin=${{ secrets.BACKEND_BIN }} \
+
+            SRC_DIR=${{ github.workspace }}/" backend-update.yml;
+
+  deploy-TestNetwork:
+    environment: TestNetwork
+    if: "github.ref == 'refs/heads/TestNetwork'"
+    runs-on: ubuntu-latest
+    needs: [build]
+
+    steps:
+      - name: Copy code files to container
+        uses: actions/checkout@v3
+
+      - name: Environment preparation
+        run: |
+          mkdir -p ~/.ssh/
+          touch ~/.ssh/id_rsa
+          chmod -R go= ~/.ssh
+          chmod 600 ~/.ssh/id_rsa
+          echo "${{ secrets.SERVER_SSH_KEY }}" >> ~/.ssh/id_rsa
+          sudo apt-add-repository -y -u ppa:ansible/ansible
+          sudo apt-get install -y rsync
+          sudo apt-get install -y ansible
+
+      - name: Deploy to Server
+        run: |
+          chmod 700 ci-scripts
+          cd ci-scripts
+          ansible-playbook -i "${{ secrets.REMOTE_HOST }}" -e "ansible_user=${{ secrets.REMOTE_USER }} \
+            DB_LINK=${{ secrets.DB_LINK }} \
+            SERVER_HOST=${{ secrets.SERVER_HOST }} \
+            SERVER_PORT=${{ secrets.SERVER_PORT }} \
+
+            BASE_URL=${{ secrets.BASE_URL }} \
+
+            LOCAL=${{ secrets.LOCAL }} \
+
+            RPC_URL=${{ secrets.RPC_URL }} \
+            WS_URL=${{ secrets.WS_URL }} \
+            DEFAULT_COIN=${{ secrets.DEFAULT_COIN }} \
+
+            backend_bin=${{ secrets.BACKEND_BIN }} \
+            SERVICE_NAME=${{ secrets.SERVICE_NAME }} \
             SRC_DIR=${{ github.workspace }}/" backend-update.yml;
