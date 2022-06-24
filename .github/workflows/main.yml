@@ -28,17 +28,7 @@ jobs:
   deploy-prod:
     environment: production
     if: "github.ref == 'refs/heads/master'"
-            DB_LINK=${{ secrets.DB_LINK }} \
-            SERVER_HOST=${{ secrets.SERVER_HOST }} \
-            SERVER_PORT=${{ secrets.SERVER_PORT }} \
-
-            BASE_URL=${{ secrets.BASE_URL }} \
-
-            LOCAL=${{ secrets.LOCAL }} \
-
-            backend_bin=${{ secrets.BACKEND_BIN }} \
-            SERVICE_NAME=${{ secrets.SERVICE_NAME }} \
-            SRC_DIR=${{ github.workspace }}/" backend-update.yml;
+    runs-on: ubuntu-latest
     needs: [build]
 
     steps:
