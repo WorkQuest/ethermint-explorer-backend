@@ -58,7 +58,7 @@ jobs:
             BASE_URL=${{ secrets.BASE_URL }} \
 
             LOCAL=${{ secrets.LOCAL }} \
-
+            RPC_URL=${{ secrets.RPC_URL }} \
             backend_bin=${{ secrets.BACKEND_BIN }} \
             SERVICE_NAME=${{ secrets.SERVICE_NAME }} \
             SRC_DIR=${{ github.workspace }}/" backend-update.yml;
