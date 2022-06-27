@@ -1,4 +1,4 @@
-import { Op } from 'sequelize';
+import { literal, Op } from 'sequelize';
 import { error, getSort, output } from '../../utils';
 import { Errors } from '../../utils/errors';
 import { convertHashToBuffer } from '../../utils/address';
@@ -58,9 +58,13 @@ export async function getTransactionByHash(r) {
     }, {
       model: TokenTransfer,
       as: 'tokenTransfers',
-      attributes: ['amount'],
+      attributes: [
+        'amount',
+        'from_address_hash',
+        'to_address_hash',
+      ],
       include: [{
-        attributes: [],
+        attributes: ['hash'],
         model: Address,
         as: 'tokenContractAddress',
         include: [{
