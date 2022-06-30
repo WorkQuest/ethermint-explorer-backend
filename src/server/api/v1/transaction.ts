@@ -97,7 +97,7 @@ export async function getTransactionByHash(r) {
       model: Logs,
       as: 'logs'
     }]
-  });
+  })
 
   if (!tx) {
     return error(Errors.NotFound, 'Transaction not found', {});
