@@ -9,8 +9,9 @@ import {
   Address,
   Transaction,
   TokenTransfer,
-  InternalTransaction,
+  InternalTransaction, SmartContract
 } from '../../database';
+import { TokenMetaData } from '../../database/models/TokenMetaData';
 
 export async function getAllTransactions(r) {
   const { count, rows } = await Transaction.findAndCountAll({
@@ -71,7 +72,26 @@ export async function getTransactionByHash(r) {
           model: Token,
           as: 'token',
           attributes: ['name', 'symbol', 'decimals'],
+          include: [{
+            model: TokenMetaData,
+            as: 'metadata',
+            attributes: ['iconUrl']
+          }]
         }],
+      }, {
+        model: Address,
+        as: 'toAddress',
+        include: [{
+          model: SmartContract,
+          as: 'smartContract'
+        }]
+      }, {
+        model: Address,
+        as: 'fromAddress',
+        include: [{
+          model: SmartContract,
+          as: 'smartContract'
+        }]
       }]
     }, {
       model: Logs,
