@@ -81,16 +81,20 @@ export async function getTransactionByHash(r) {
       }, {
         model: Address,
         as: 'toAddress',
+        attributes: ['hash'],
         include: [{
           model: SmartContract,
-          as: 'smartContract'
+          as: 'smartContract',
+          attributes: ['address_hash']
         }]
       }, {
         model: Address,
         as: 'fromAddress',
+        attributes: ['hash'],
         include: [{
           model: SmartContract,
-          as: 'smartContract'
+          as: 'smartContract',
+          attributes: ['address_hash']
         }]
       }]
     }, {
