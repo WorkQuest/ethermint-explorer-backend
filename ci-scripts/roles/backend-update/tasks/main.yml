@@ -1,8 +1,8 @@
 ---
 # tasks file for backend-update
-- name: Stop backend process
-  shell: pm2 stop all
-  ignore_errors: yes
+#- name: Stop backend process
+#  shell: pm2 stop all
+#  ignore_errors: yes
 
 - name: Delete backend dir
   file:
@@ -44,7 +44,7 @@
     dest: '{{ backend_bin }}/{{ backend_env }}'
 
 - name: Start backend process
-  shell: pm2 start app.json
+  shell: pm2 reload app.json
   args:
     chdir: '{{ backend_bin }}'
 
