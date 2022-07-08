@@ -1,7 +1,7 @@
 {
   "name": "ethermint-explorer-backend",
   "version": "1.0.1",
-  "description": "",
+  "description": " ",
   "main": "index.js",
   "scripts": {
     "start": "nodemon -e ts  --exec \"npm run compile\"",
