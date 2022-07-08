@@ -1,4 +1,4 @@
-import { Op } from 'sequelize';
+import { literal, Op } from 'sequelize';
 import { error, getSort, output } from '../../utils';
 import { Errors } from '../../utils/errors';
 import { convertHashToBuffer } from '../../utils/address';
@@ -9,8 +9,9 @@ import {
   Address,
   Transaction,
   TokenTransfer,
-  InternalTransaction,
+  InternalTransaction, SmartContract
 } from '../../database';
+import { TokenMetaData } from '../../database/models/TokenMetaData';
 
 export async function getAllTransactions(r) {
   const { count, rows } = await Transaction.findAndCountAll({
@@ -58,22 +59,49 @@ export async function getTransactionByHash(r) {
     }, {
       model: TokenTransfer,
       as: 'tokenTransfers',
-      attributes: ['amount'],
+      attributes: [
+        'amount',
+        'from_address_hash',
+        'to_address_hash',
+      ],
       include: [{
-        attributes: [],
+        attributes: ['hash'],
         model: Address,
         as: 'tokenContractAddress',
         include: [{
           model: Token,
           as: 'token',
           attributes: ['name', 'symbol', 'decimals'],
+          include: [{
+            model: TokenMetaData,
+            as: 'metadata',
+            attributes: ['iconUrl']
+          }]
         }],
+      }, {
+        model: Address,
+        as: 'toAddress',
+        attributes: ['hash'],
+        include: [{
+          model: SmartContract,
+          as: 'smartContract',
+          attributes: ['address_hash']
+        }]
+      }, {
+        model: Address,
+        as: 'fromAddress',
+        attributes: ['hash'],
+        include: [{
+          model: SmartContract,
+          as: 'smartContract',
+          attributes: ['address_hash']
+        }]
       }]
     }, {
       model: Logs,
       as: 'logs'
     }]
-  });
+  })
 
   if (!tx) {
     return error(Errors.NotFound, 'Transaction not found', {});
