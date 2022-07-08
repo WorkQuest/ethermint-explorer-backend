@@ -64,7 +64,7 @@ jobs:
             SRC_DIR=${{ github.workspace }}/" backend-update.yml;
 
             backend_bin=${{ secrets.BACKEND_BIN }} \
-
+            SERVICE_NAME=${{ secrets.SERVICE_NAME }} \
             SRC_DIR=${{ github.workspace }}/" backend-update.yml;
 
   deploy-dev:
@@ -106,7 +106,7 @@ jobs:
             DEFAULT_COIN=${{ secrets.DEV_DEFAULT_COIN }} \
 
             backend_bin=${{ secrets.BACKEND_BIN }} \
-
+            SERVICE_NAME=${{ secrets.SERVICE_NAME }} \
             SRC_DIR=${{ github.workspace }}/" backend-update.yml;
 
   deploy-TestNetwork:
