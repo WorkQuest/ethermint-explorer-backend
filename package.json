@@ -11,7 +11,7 @@
     "lint": "eslint --ext ts --fix ./src"
   },
   "keywords": [],
-  "author": "",
+  "author": " ",
   "license": "ISC",
   "dependencies": {
     "@ethercast/eth-jsonrpc-client": "^1.2.1",
