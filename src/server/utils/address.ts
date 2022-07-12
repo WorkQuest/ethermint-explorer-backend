@@ -52,7 +52,7 @@ export function getEmptyWallet(address: string) {
   const wallet = {
     hash: {
       hex: hexAddress,
-      bech32: converter('wq').toBech32(address),
+      bech32: converter('wq').toBech32(hexAddress),
     },
     contract_code: null,
     fetched_coin_balance: "0",
