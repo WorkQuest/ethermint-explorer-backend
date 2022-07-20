@@ -1,4 +1,5 @@
-import { convertAddressToHex, convertHashToBuffer } from '../../utils/address';
+import { TokenMetaData } from '../../database/models/TokenMetaData';
+import { convertAddressToHex, convertHashToBuffer, getEmptyWallet } from '../../utils/address';
 import { output } from '../../utils';
 import { literal, Op } from 'sequelize';
 import {
@@ -13,7 +14,6 @@ import {
   Token,
   Logs,
 } from '../../database';
-import { TokenMetaData } from '../../database/models/TokenMetaData';
 
 export async function getAccountByAddress(r) {
   const { commonLimit } = r.query;
@@ -21,7 +21,7 @@ export async function getAccountByAddress(r) {
 
   AddressCoinBalance.removeAttribute('id');
 
-  const account = await Address.findByPk(address, {
+  let account: any = await Address.findByPk(address, {
     include: [{
       model: Token,
       as: 'token',
@@ -31,43 +31,51 @@ export async function getAccountByAddress(r) {
     }]
   });
 
-  const addressCoinBalance = await AddressCoinBalance.findOne({
-    attributes: { exclude: ['inserted_at', 'updated_at', 'block_number'] },
-    where: { address_hash: address },
-    order: [['block_number', 'DESC']],
-  });
+  if (account) {
+    const addressCoinBalance = await AddressCoinBalance.findOne({
+      attributes: { exclude: ['inserted_at', 'updated_at', 'block_number'] },
+      where: { address_hash: address },
+      order: [['block_number', 'DESC']],
+    });
 
-  const addressTokenBalances = await AddressCurrentTokenBalance.findAll({
-    attributes: {
-      exclude: ['id', 'block_number', 'inserted_at', 'updated_at', 'old_value'],
-      include: [
-        [literal('token.name'), 'name'],
-        [literal('token.symbol'), 'symbol'],
-        [literal('token.decimals'), 'decimals']
-      ]
-    },
-    where: { address_hash: address },
-    include: {
-      model: Token,
-      as: 'token',
-      attributes: ['name'],
-      include: [{
-        model: TokenMetaData,
-        as: 'metadata',
-        attributes: ['iconUrl', 'description']
-      }]
-    },
-    order: [['block_number', 'DESC']]
-  });
+    const addressTokenBalances = await AddressCurrentTokenBalance.findAll({
+      attributes: {
+        exclude: ['id', 'block_number', 'inserted_at', 'updated_at', 'old_value'],
+        include: [
+          [literal('token.name'), 'name'],
+          [literal('token.symbol'), 'symbol'],
+          [literal('token.decimals'), 'decimals']
+        ]
+      },
+      where: { address_hash: address },
+      include: {
+        model: Token,
+        as: 'token',
+        attributes: ['name'],
+        include: [{
+          model: TokenMetaData,
+          as: 'metadata',
+          attributes: ['iconUrl', 'description']
+        }]
+      },
+      order: [['block_number', 'DESC']]
+    });
 
-  const createdContract = await Transaction.findOne({
-    where: { created_contract_address_hash: address },
-    attributes: ['from_address_hash', 'hash']
-  });
+    const createdContract = await Transaction.findOne({
+      where: { created_contract_address_hash: address },
+      attributes: ['from_address_hash', 'hash']
+    });
 
-  account.setDataValue('createdContract', createdContract);
-  account.setDataValue('addressCoinBalance', addressCoinBalance);
-  account.setDataValue('addressTokensBalances', addressTokenBalances);
+    account.setDataValue('createdContract', createdContract);
+    account.setDataValue('addressCoinBalance', addressCoinBalance);
+    account.setDataValue('addressTokensBalances', addressTokenBalances);
+  } else {
+    account = getEmptyWallet(r.params.address);
+
+    account['createdContract'] = null;
+    account['addressCoinBalance'] = null;
+    account['addressTokensBalances'] = [];
+  }
 
   const addressLogsList = await Logs.findAndCountAll({
     where: {

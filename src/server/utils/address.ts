@@ -1,5 +1,6 @@
 import converter from 'bech32-converting';
 import { Buffer } from 'buffer';
+import { Address } from '../database';
 
 export const enum AddressType {
   Hex = 0,
@@ -43,4 +44,27 @@ export function convertHashToBuffer(address: string): Buffer {
     hexAddress.toUpperCase();
 
   return Buffer.from(processedHexAddress, 'hex');
+}
+
+export function getEmptyWallet(address: string) {
+  const hexAddress = convertAddressToHex(address);
+
+  const wallet = {
+    hash: {
+      hex: hexAddress,
+      bech32: converter('wq').toBech32(hexAddress),
+    },
+    contract_code: null,
+    fetched_coin_balance: "0",
+    fetched_coin_balance_block_number: "0",
+    inserted_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    nonce: null,
+    decompiled: false,
+    verified: false,
+    token: null,
+    smartContract: null
+  }
+
+  return wallet;
 }
