@@ -56,12 +56,12 @@ jobs:
             SERVER_PORT=${{ secrets.SERVER_PORT }} \
 
             BASE_URL=${{ secrets.BASE_URL }} \
-            WS_URL=${{ secrets.WS_URL }} \
-            DEFAULT_COIN=${{ secrets.DEFAULT_COIN }} \
+
             LOCAL=${{ secrets.LOCAL }} \
-            RPC_URL=${{ secrets.RPC_URL }} \
+          
             backend_bin=${{ secrets.BACKEND_BIN }} \
             SERVICE_NAME=${{ secrets.SERVICE_NAME }} \
+            SRC_DIR=${{ github.workspace }}/" backend-update.yml;
 
   deploy-dev:
     environment: develop
