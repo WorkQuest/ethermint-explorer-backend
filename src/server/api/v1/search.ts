@@ -1,6 +1,6 @@
 import { Address, Block, SmartContract, Token, Transaction } from '../../database';
 import { getSearchType, SearchFilter, SearchType } from '../../utils/search';
-import { convertHashToBuffer } from '../../utils/address';
+import { convertHashToBuffer, getEmptyWallet } from '../../utils/address';
 import { output } from '../../utils';
 import { literal, Op } from 'sequelize';
 
@@ -52,7 +52,7 @@ async function getAddress(query, extraParams = false) {
   });
 
   if (!searchResult) {
-    return { searchResult, searchType: SearchType.None };
+    return { searchResult: getEmptyWallet(query), searchType: SearchType.Address };
   }
 
   if (searchResult.token) {
