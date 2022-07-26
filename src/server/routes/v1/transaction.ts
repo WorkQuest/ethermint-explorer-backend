@@ -135,7 +135,7 @@ export default [{
   handler: handlers.getTransactionsCountByPeriod,
   options: {
     id: 'v1.transactions.getTransactionsCountByPeriod',
-    tags: ['api', 'transactions'],
+    tags: ['api', 'transaction'],
     description: 'Get transactions count by period',
     validate: {
       query: Joi.object({
