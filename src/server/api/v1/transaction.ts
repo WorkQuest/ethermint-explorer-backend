@@ -225,3 +225,30 @@ export async function getTransactionsWithTokens(r) {
 
   return output({ transactions: rows, count });
 }
+
+export async function getTransactionsCountByPeriod(r) {
+  const transactions = await Transaction.findAll({
+    attributes: [
+      [literal(`date(date_trunc('day', "block"."timestamp"))`), 'date'],
+      [literal('count("Transaction"."hash")'), 'count'],
+    ],
+    include: [{
+      model: Block,
+      as: 'block',
+      attributes: [],
+      where: {
+        timestamp: {
+          [Op.between]: [
+            new Date(r.query.fromDate),
+            new Date(r.query.toDate)
+          ]
+        }
+      },
+      required: true
+    }],
+    order: literal('date DESC'),
+    group: ['date']
+  });
+
+  return output({ count: transactions });
+}
