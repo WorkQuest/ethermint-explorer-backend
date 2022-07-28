@@ -4,7 +4,7 @@ import { coinCirculatingSupplySchema } from '../../database/schemes/coin';
 
 export default [{
   method: 'GET',
-  path: '/coin/circulating-supply',
+  path: '/v1/coin/circulating-supply',
   handler: handlers.getCoinCirculatingSupply,
   options: {
     id: 'v1.coin.getCoinCirculatingSupply',
