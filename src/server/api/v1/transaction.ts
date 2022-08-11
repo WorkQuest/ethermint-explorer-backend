@@ -2,6 +2,7 @@ import { literal, Op } from 'sequelize';
 import { error, getSort, output } from '../../utils';
 import { Errors } from '../../utils/errors';
 import { convertHashToBuffer } from '../../utils/address';
+import { TokenMetaData } from '../../database/models/TokenMetaData';
 import {
   Logs,
   Token,
@@ -11,7 +12,6 @@ import {
   TokenTransfer,
   InternalTransaction, SmartContract
 } from '../../database';
-import { TokenMetaData } from '../../database/models/TokenMetaData';
 
 export async function getAllTransactions(r) {
   const { count, rows } = await Transaction.findAndCountAll({
@@ -246,7 +246,7 @@ export async function getTransactionsCountByPeriod(r) {
       },
       required: true
     }],
-    order: literal('date DESC'),
+    order: literal('date ASC'),
     group: ['date']
   });
 
