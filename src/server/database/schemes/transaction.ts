@@ -12,7 +12,7 @@ import {
   valueStringSchema,
   smallStringValueSchema,
   smallNumberValueSchema,
-  blockNumberNumberSchema,
+  blockNumberNumberSchema, valueNumberSchema
 } from './index';
 
 export const shortTransactionSchema = Joi.object({
@@ -138,3 +138,8 @@ export const transactionWithTokenSchema = Joi.object({
 }).label('TransactionWithTokens');
 
 export const rawTransactionArray = Joi.array().items(rawTransactionSchema).label('RawTransactionArray');
+
+export const transactionDateCountSchema = Joi.object({
+  date: Joi.date().example('2022-06-23'),
+  count: smallStringValueSchema
+}).label('TransactionDateCount');
