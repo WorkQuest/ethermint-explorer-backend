@@ -2,6 +2,7 @@ import { literal, Op } from 'sequelize';
 import { error, getSort, output } from '../../utils';
 import { Errors } from '../../utils/errors';
 import { convertHashToBuffer } from '../../utils/address';
+import { TokenMetaData } from '../../database/models/TokenMetaData';
 import {
   Logs,
   Token,
@@ -11,7 +12,6 @@ import {
   TokenTransfer,
   InternalTransaction, SmartContract
 } from '../../database';
-import { TokenMetaData } from '../../database/models/TokenMetaData';
 
 export async function getAllTransactions(r) {
   const { count, rows } = await Transaction.findAndCountAll({
@@ -224,4 +224,31 @@ export async function getTransactionsWithTokens(r) {
   });
 
   return output({ transactions: rows, count });
+}
+
+export async function getTransactionsCountByPeriod(r) {
+  const transactions = await Transaction.findAll({
+    attributes: [
+      [literal(`date(date_trunc('day', "block"."timestamp"))`), 'date'],
+      [literal('count("Transaction"."hash")'), 'count'],
+    ],
+    include: [{
+      model: Block,
+      as: 'block',
+      attributes: [],
+      where: {
+        timestamp: {
+          [Op.between]: [
+            new Date(r.query.fromDate),
+            new Date(r.query.toDate)
+          ]
+        }
+      },
+      required: true
+    }],
+    order: literal('date ASC'),
+    group: ['date']
+  });
+
+  return output({ count: transactions });
 }

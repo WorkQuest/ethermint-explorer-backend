@@ -1,10 +1,16 @@
 import * as Joi from 'joi';
 import * as handlers from '../../api/v1/transaction';
-import { outputOkSchema, outputPaginationSchema, paginationFields, paginationSchema } from '../../database/schemes';
+import {
+  dateISOSchema,
+  outputOkSchema,
+  outputPaginationSchema,
+  paginationFields,
+  paginationSchema
+} from '../../database/schemes';
 import {
   shortInternalTransactionSchema,
   shortTransactionSchema,
-  shortTransactionWithTransfersSchema,
+  shortTransactionWithTransfersSchema, transactionDateCountSchema,
   transactionSchema, transactionWithTokenSchema
 } from '../../database/schemes/transaction';
 import { getHoldersSort, getSortBySchema, getTransactionsSortSchema } from '../../database/schemes/sort';
@@ -121,6 +127,28 @@ export default [{
         transactionWithTokenSchema,
         'GetTransactionsWithTokensSchema'
       ).label('GetTransactionsWithTokensResponse')
+    }
+  }
+}, {
+  method: 'GET',
+  path: '/v1/transactions/count',
+  handler: handlers.getTransactionsCountByPeriod,
+  options: {
+    id: 'v1.transactions.getTransactionsCountByPeriod',
+    tags: ['api', 'transaction'],
+    description: 'Get transactions count by period',
+    validate: {
+      query: Joi.object({
+        fromDate: dateISOSchema.required(),
+        toDate: dateISOSchema.required()
+      }).label('GetTransactionsCountByPeriodQuery')
+    },
+    response: {
+      schema: outputPaginationSchema(
+        'count',
+        transactionDateCountSchema,
+        'TransactionDateCountArray'
+      ).label('GetTransactionsCountByPeriodResponse'),
     }
   }
 }];
