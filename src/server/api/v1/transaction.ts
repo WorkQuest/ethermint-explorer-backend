@@ -132,7 +132,8 @@ export async function getAccountTransactions(r) {
         from_address_hash: address,
       },
     },
-    subQuery: false,
+    distinct: true,
+    // subQuery: false,
     include: [{
       as: 'block',
       model: Block,
