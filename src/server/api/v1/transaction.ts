@@ -133,7 +133,6 @@ export async function getAccountTransactions(r) {
       },
     },
     distinct: true,
-    // subQuery: false,
     include: [{
       as: 'block',
       model: Block,
