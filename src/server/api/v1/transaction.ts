@@ -252,3 +252,4 @@ export async function getTransactionsCountByPeriod(r) {
 
   return output({ count: transactions });
 }
+
